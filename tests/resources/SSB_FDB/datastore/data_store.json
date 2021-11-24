@@ -1,0 +1,29 @@
+{
+    "name": "no.ssb.fdb",
+     "label": "Data fra SSB",
+     "description": "Registerdata som inngår i SSBs statistikkproduksjon",
+     "versions": [
+       {
+         "version": "0.0.0.0",
+         "description": "Draft",
+         "releaseTime": 1635299291,
+         "languageCode": "no",
+         "dataStructureUpdates": [
+         ],
+         "updateType": "MINOR"
+       },
+       {
+         "version": "1.0.0.0",
+         "description": "Første variabel",
+         "releaseTime": 1634814468,
+         "languageCode": "no",
+         "dataStructureUpdates": [
+           {
+             "description": "Første variabel",
+             "name": "BOSTED",
+             "operation": "ADD"
+           }
+         ]
+       }
+     ]
+   }
