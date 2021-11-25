@@ -33,7 +33,7 @@ def new_draft_to_datastore(dataset_name: str, description: str,
 
 def set_status_for_pending_operation(dataset_name: str, status_message: str):
     if status_message not in ["PENDING_RELEASE", "DRAFT"]:
-        raise noSuchReleaseStatus(
+        raise NoSuchReleaseStatus(
             'release status must be one of ["PENDING_RELEASE", "DRAFT"]'
         )
     pending_operations = datastore.get_pending_operations_json()
@@ -43,21 +43,21 @@ def set_status_for_pending_operation(dataset_name: str, status_message: str):
             operation for operation in pending_operations_list
             if operation["datasetName"] == dataset_name
         )
-        dataset["releaseStatus"] = "PENDING_RELEASE"
+        dataset["releaseStatus"] = status_message
         pending_operations["version"] = util.bump_draftpatch(
             pending_operations["version"]
         )
         datastore.write_pending_operations_json(pending_operations)
     except StopIteration:
-        raise noSuchPendingOperation(
+        raise NoSuchPendingOperation(
             f'Unable to change release status of {dataset_name}.'
             ' {dataset_name} not in list of pending operations'
         )
 
 
-class noSuchPendingOperation(Exception):
+class NoSuchPendingOperation(Exception):
     pass
 
 
-class noSuchReleaseStatus(Exception):
+class NoSuchReleaseStatus(Exception):
     pass
