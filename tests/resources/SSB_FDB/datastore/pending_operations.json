@@ -1,0 +1,11 @@
+{
+    "version": "0.0.0.0",
+    "pendingOperations": [
+        {
+            "datasetName" : "TEST_DATASET",
+            "operation" : "ADD",
+            "description" : "Nytt datasett om test",
+            "releaseStatus": "DRAFT"
+        }
+    ]
+}
