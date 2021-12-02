@@ -1,7 +1,8 @@
 import shutil
 
-from datastore_version_manager.adapter import datastore, built_datasets
-from datastore_version_manager.util import util
+from datastore_version_manager.adapter import (
+    datastore, built_datasets, pending_operations
+)
 
 
 def new_draft_to_datastore(dataset_name: str, description: str,
@@ -17,46 +18,15 @@ def new_draft_to_datastore(dataset_name: str, description: str,
         f'{built_dataset_path}/{dataset_name}__0_0.parquet',
         f'{datastore.get_data_dir_path(dataset_name)}/{dataset_name}__0_0.parquet'
     )
-    pending_operations = datastore.get_pending_operations()
-    pending_operations_list = pending_operations["pendingOperations"]
-    pending_operations_list.append({
-        "datasetName" : dataset_name,
-        "operation" : operation,
-        "description" : description,
-        "releaseStatus": "DRAFT"
-    })
-    pending_operations["version"] = util.bump_draft_version(
-        pending_operations["version"]
-    )
-    datastore.write_pending_operations(pending_operations)
+    pending_operations.add_new_draft(dataset_name, operation, description)
 
 
-def set_status_for_pending_operation(dataset_name: str, status_message: str):
-    if status_message not in ["PENDING_RELEASE", "DRAFT"]:
+def set_status_for_pending_operation(dataset_name: str, release_status: str):
+    if release_status not in ["PENDING_RELEASE", "DRAFT"]:
         raise NoSuchReleaseStatus(
             'release status must be one of ["PENDING_RELEASE", "DRAFT"]'
         )
-    pending_operations = datastore.get_pending_operations()
-    pending_operations_list = pending_operations["pendingOperations"]
-    try:
-        dataset = next(
-            operation for operation in pending_operations_list
-            if operation["datasetName"] == dataset_name
-        )
-        dataset["releaseStatus"] = status_message
-        pending_operations["version"] = util.bump_draft_version(
-            pending_operations["version"]
-        )
-        datastore.write_pending_operations(pending_operations)
-    except StopIteration:
-        raise NoSuchPendingOperation(
-            f'Unable to change release status of {dataset_name}.'
-            ' {dataset_name} not in list of pending operations'
-        )
-
-
-class NoSuchPendingOperation(Exception):
-    pass
+    pending_operations.update_release_status(dataset_name, release_status)
 
 
 class NoSuchReleaseStatus(Exception):
