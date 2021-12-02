@@ -17,7 +17,7 @@ def new_draft_to_datastore(dataset_name: str, description: str,
         f'{built_dataset_path}/{dataset_name}__0_0.parquet',
         f'{datastore.get_data_dir_path(dataset_name)}/{dataset_name}__0_0.parquet'
     )
-    pending_operations = datastore.get_pending_operations_json()
+    pending_operations = datastore.get_pending_operations()
     pending_operations_list = pending_operations["pendingOperations"]
     pending_operations_list.append({
         "datasetName" : dataset_name,
@@ -25,10 +25,10 @@ def new_draft_to_datastore(dataset_name: str, description: str,
         "description" : description,
         "releaseStatus": "DRAFT"
     })
-    pending_operations["version"] = util.bump_draftpatch(
+    pending_operations["version"] = util.bump_draft_version(
         pending_operations["version"]
     )
-    datastore.write_pending_operations_json(pending_operations)
+    datastore.write_pending_operations(pending_operations)
 
 
 def set_status_for_pending_operation(dataset_name: str, status_message: str):
@@ -36,7 +36,7 @@ def set_status_for_pending_operation(dataset_name: str, status_message: str):
         raise NoSuchReleaseStatus(
             'release status must be one of ["PENDING_RELEASE", "DRAFT"]'
         )
-    pending_operations = datastore.get_pending_operations_json()
+    pending_operations = datastore.get_pending_operations()
     pending_operations_list = pending_operations["pendingOperations"]
     try:
         dataset = next(
@@ -44,10 +44,10 @@ def set_status_for_pending_operation(dataset_name: str, status_message: str):
             if operation["datasetName"] == dataset_name
         )
         dataset["releaseStatus"] = status_message
-        pending_operations["version"] = util.bump_draftpatch(
+        pending_operations["version"] = util.bump_draft_version(
             pending_operations["version"]
         )
-        datastore.write_pending_operations_json(pending_operations)
+        datastore.write_pending_operations(pending_operations)
     except StopIteration:
         raise NoSuchPendingOperation(
             f'Unable to change release status of {dataset_name}.'
