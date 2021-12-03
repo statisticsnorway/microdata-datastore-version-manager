@@ -1,5 +1,6 @@
-from datastore_version_manager.util import semver
 from datastore_version_manager.adapter import datastore
+from datastore_version_manager.adapter.constants import RELEASE_STATUS_ALLOWED_TRANSITIONS
+from datastore_version_manager.util import semver
 
 
 def add_new_draft(dataset_name: str, operation: str,
@@ -26,6 +27,12 @@ def update_release_status(dataset_name: str, release_status: str) -> None:
             operation for operation in pending_operations_list
             if operation["datasetName"] == dataset_name
         )
+
+        if release_status not in RELEASE_STATUS_ALLOWED_TRANSITIONS[dataset["releaseStatus"]]:
+            raise ReleaseStatusTransitionNotAllowed(
+                f'Transition from {dataset["releaseStatus"]} to {release_status} is not allowed'
+            )
+
         dataset["releaseStatus"] = release_status
         pending_operations["version"] = semver.bump_draft_version(
             pending_operations["version"]
@@ -39,4 +46,8 @@ def update_release_status(dataset_name: str, release_status: str) -> None:
 
 
 class NoSuchPendingOperation(Exception):
+    pass
+
+
+class ReleaseStatusTransitionNotAllowed(Exception):
     pass

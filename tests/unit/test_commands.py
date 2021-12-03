@@ -2,6 +2,8 @@ import pytest
 import shutil
 import json
 from datastore_version_manager import commands
+from datastore_version_manager.adapter.pending_operations import ReleaseStatusTransitionNotAllowed
+
 
 def setup_function():
     shutil.copytree(
@@ -9,11 +11,12 @@ def setup_function():
         'tests/resources_backup'
     )
 
+
 def teardown_function():
     shutil.rmtree('tests/resources')
     shutil.move(
         'tests/resources_backup',
-        'tests/resources' 
+        'tests/resources'
     )
 
 
@@ -30,11 +33,16 @@ def test_update_release_status():
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.1"
     assert {
-        "datasetName" : "TEST_DATASET",
-        "operation" : "ADD",
-        "description" : "Nytt datasett om test",
-        "releaseStatus": "PENDING_RELEASE"
-    } in pending_operations["pendingOperations"]
+               "datasetName": "TEST_DATASET",
+               "operation": "ADD",
+               "description": "Nytt datasett om test",
+               "releaseStatus": "PENDING_RELEASE"
+           } in pending_operations["pendingOperations"]
+
+
+def test_update_release_status_not_allowed():
+    with pytest.raises(ReleaseStatusTransitionNotAllowed):
+        commands.set_status_for_pending_operation('TEST_DATASET', 'DRAFT')
 
 
 def test_new_draft_to_datastore():
@@ -43,8 +51,8 @@ def test_new_draft_to_datastore():
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.1"
     assert {
-        "datasetName" : "NEW_VARIABLE",
-        "operation" : "ADD",
-        "description" : "Første variabel",
-        "releaseStatus": "DRAFT"
-    } in pending_operations["pendingOperations"]
+               "datasetName": "NEW_VARIABLE",
+               "operation": "ADD",
+               "description": "Første variabel",
+               "releaseStatus": "DRAFT"
+           } in pending_operations["pendingOperations"]
