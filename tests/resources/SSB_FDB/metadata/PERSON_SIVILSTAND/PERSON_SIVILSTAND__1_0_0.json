@@ -1,0 +1,136 @@
+{
+  "name": "PERSON_SIVILSTAND",
+  "temporalCoverage": {
+    "start": -15492,
+    "stop": 18583
+  },
+  "temporality": "EVENT",
+  "identifierVariables": [
+    {
+      "variableRole": "Identifier",
+      "name": "PERSONID_1",
+      "label": "Personidentifikator",
+      "dataType": "STRING",
+      "representedVariables": [
+        {
+          "validPeriod": {
+            "start": -15492,
+            "stop": 18583
+          },
+          "description": "Identifikator for person i form av fødselsnummer eller d-nummer.",
+          "valueDomain": {
+            "description": "Pseudonymisert fødselsnummer"
+          }
+        }
+      ]
+    }
+  ],
+  "measureVariable": {
+    "name": "SIVILSTAND",
+    "label": "Sivilstand",
+    "dataType": "STRING",
+    "representedVariables": [
+      {
+        "description": "Variabelen viser en persons stilling i forhold til ekteskapslovgivningen.",
+        "validPeriod": {
+          "start": -2192,
+          "stop": 8400
+        },
+        "valueDomain": {
+          "codeList": [
+            {
+              "category": "Ugift",
+              "code": "1"
+            },
+            {
+              "category": "Gift",
+              "code": "2"
+            },
+            {
+              "category": "Enke/enkemann",
+              "code": "3"
+            },
+            {
+              "category": "Skilt",
+              "code": "4"
+            },
+            {
+              "category": "Separert",
+              "code": "5"
+            }
+          ]
+        }
+      },
+      {
+        "description": "Variabelen viser en persons stilling i forhold til ekteskapslovgivningen.",
+        "validPeriod": {
+          "start": 8401
+        },
+        "valueDomain": {
+          "codeList": [
+            {
+              "category": "Ugift",
+              "code": "1"
+            },
+            {
+              "category": "Gift",
+              "code": "2"
+            },
+            {
+              "category": "Enke/enkemann",
+              "code": "3"
+            },
+            {
+              "category": "Skilt",
+              "code": "4"
+            },
+            {
+              "category": "Separert",
+              "code": "5"
+            },
+            {
+              "category": "Registrert partner",
+              "code": "6"
+            },
+            {
+              "category": "Separert partner",
+              "code": "7"
+            },
+            {
+              "category": "Skilt partner",
+              "code": "8"
+            },
+            {
+              "category": "Gjenlevende partner",
+              "code": "9"
+            }
+          ]
+        }
+      }
+    ],
+    "keyType": {
+      "name": "PERSON",
+      "label": "Person",
+      "description": "Person."
+    }
+  },
+  "subjectFields": [
+    "Befolkning",
+    "Folketall"
+  ],
+  "languageCode": "no",
+  "attributeVariables": [
+    {
+      "name": "START",
+      "label": "Startdato",
+      "dataType": "Instant",
+      "variableRole": "START_TIME"
+    },
+    {
+      "name": "STOP",
+      "label": "Stoppdato",
+      "dataType": "Instant",
+      "variableRole": "STOP_TIME"
+    }
+  ]
+}

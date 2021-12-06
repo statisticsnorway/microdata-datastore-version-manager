@@ -1,0 +1,301 @@
+{
+  "dataStore": {
+    "name": "no.ssb.fdb",
+    "label": "Data fra SSB",
+    "description": "Registerdata som inngår i SSBs statistikkproduksjon",
+    "languageCode": "no"
+  },
+  "dataStructures": [
+    {
+      "name": "SKATT_BRUTTOINNTEKT",
+      "populationDescription": "Omfatter alle skattepliktige i løpet av inntektsåret. Inkl. personer med dnr.",
+      "temporality": "ACCUMULATED",
+      "temporalCoverage": {
+        "start": 8401,
+        "stop": 18261
+      },
+      "identifierVariables": [
+        {
+          "name": "PERSONID_1",
+          "label": "Personidentifikator",
+          "representedVariables": [
+            {
+              "description": "Identifikator for person i RAIRD",
+              "validPeriod": {
+                "start": 8401,
+                "stop": 18261
+              },
+              "valueDomain": {
+                "description": "N/A",
+                "unitOfMeasure": "N/A"
+              }
+            }
+          ],
+          "dataType": "Long",
+          "variableRole": "Identifier",
+          "keyType": {
+            "name": "PERSON",
+            "label": "Person",
+            "description": "Statistisk enhet er person (individ, enkeltmenenske)"
+          },
+          "format": "RandomUInt48"
+        }
+      ],
+      "measureVariable": {
+        "name": "SKATT_BRUTTOINNTEKT",
+        "label": "Bruttoinntekt",
+        "representedVariables": [
+          {
+            "description": "Variabelen omfatter lønnsinntekter, næringsinntekter, pensjoner og kapitalinntekter. \n \n https://www.ssb.no/a/metadata/conceptvariable/vardok/16/nb \n \n Variabelen omfatter alle skattepliktige i løpet av inntektsåret. Inkl. personer med dnr. Observasjoner med verdiene 0 og uoppgitt (missing) er utelatt.",
+            "validPeriod": {
+              "start": 8401,
+              "stop": 18261
+            },
+            "valueDomain": {
+              "description": "NOK",
+              "unitOfMeasure": "NOK"
+            }
+          }
+        ],
+        "dataType": "Long",
+        "variableRole": "Measure"
+      },
+      "subjectFields": [
+        "Skatt for personer",
+        "Inntekt og forbruk"
+      ],
+      "languageCode": "no",
+      "attributeVariables": [
+        {
+          "name": "START",
+          "label": "Startdato",
+          "representedVariables": [
+            {
+              "description": "Startdato/måletidspunktet for hendelsen",
+              "validPeriod": {
+                "start": 8401,
+                "stop": 18261
+              },
+              "valueDomain": {
+                "description": "N/A",
+                "unitOfMeasure": "N/A"
+              }
+            }
+          ],
+          "dataType": "Instant",
+          "variableRole": "Start"
+        },
+        {
+          "name": "STOP",
+          "label": "Stoppdato",
+          "representedVariables": [
+            {
+              "description": "Stoppdato/sluttdato for hendelsen",
+              "validPeriod": {
+                "start": 8401,
+                "stop": 18261
+              },
+              "valueDomain": {
+                "description": "N/A",
+                "unitOfMeasure": "N/A"
+              }
+            }
+          ],
+          "dataType": "Instant",
+          "variableRole": "Stop"
+        }
+      ]
+    },
+    {
+      "name": "PERSON_SIVILSTAND",
+      "populationDescription": "Hovedsakelig bosatte i Norge (fnr), men noen ikke-bosatte kan inngå (dnr)",
+      "temporality": "EVENT",
+      "temporalCoverage": {
+        "start": 8034,
+        "stop": 18261
+      },
+      "identifierVariables": [
+        {
+          "name": "PERSONID_1",
+          "label": "Personidentifikator",
+          "representedVariables": [
+            {
+              "description": "Identifikator for person i RAIRD",
+              "validPeriod": {
+                "start": 8034,
+                "stop": 18261
+              },
+              "valueDomain": {
+                "description": "N/A",
+                "unitOfMeasure": "N/A"
+              }
+            }
+          ],
+          "dataType": "Long",
+          "variableRole": "Identifier",
+          "keyType": {
+            "name": "PERSON",
+            "label": "Person",
+            "description": "Statistisk enhet er person (individ, enkeltmenenske)"
+          },
+          "format": "RandomUInt48"
+        }
+      ],
+      "measureVariable": {
+        "name": "PERSON_SIVILSTAND",
+        "label": "Sivilstand",
+        "representedVariables": [
+          {
+            "description": "Status i forhold til ekteskapslovgivningen",
+            "validPeriod": {
+              "start": -25567,
+              "stop": 8034
+            },
+            "valueDomain": {
+              "codeList": [
+                {
+                  "category": "0 ukjent",
+                  "code": "0"
+                }
+              ],
+              "missingValues": []
+            }
+          },
+          {
+            "description": "Status i forhold til ekteskapslovgivningen",
+            "validPeriod": {
+              "start": 8035,
+              "stop": 8612
+            },
+            "valueDomain": {
+              "codeList": [
+                {
+                  "category": "0 ukjent",
+                  "code": "0"
+                },
+                {
+                  "category": "Ugift",
+                  "code": "1"
+                },
+                {
+                  "category": "Gift",
+                  "code": "2"
+                },
+                {
+                  "category": "Enke/enkemann",
+                  "code": "3"
+                },
+                {
+                  "category": "Skilt",
+                  "code": "4"
+                },
+                {
+                  "category": "Separert",
+                  "code": "5"
+                }
+              ],
+              "missingValues": []
+            }
+          },
+          {
+            "description": "Status i forhold til ekteskapslovgivningen",
+            "validPeriod": {
+              "start": 8613
+            },
+            "valueDomain": {
+              "codeList": [
+                {
+                  "category": "0 ukjent",
+                  "code": "0"
+                },
+                {
+                  "category": "Ugift",
+                  "code": "1"
+                },
+                {
+                  "category": "Gift",
+                  "code": "2"
+                },
+                {
+                  "category": "Enke/enkemann",
+                  "code": "3"
+                },
+                {
+                  "category": "Skilt",
+                  "code": "4"
+                },
+                {
+                  "category": "Separert",
+                  "code": "5"
+                },
+                {
+                  "category": "Registrert partner",
+                  "code": "6"
+                },
+                {
+                  "category": "Separert partner",
+                  "code": "7"
+                },
+                {
+                  "category": "Skilt partner",
+                  "code": "8"
+                },
+                {
+                  "category": "Gjenlevende partner",
+                  "code": "9"
+                }
+              ],
+              "missingValues": []
+            }
+          }
+        ],
+        "dataType": "String",
+        "variableRole": "Measure"
+      },
+      "subjectFields": [
+        "Befolkning"
+      ],
+      "languageCode": "no",
+      "attributeVariables": [
+        {
+          "name": "START",
+          "label": "Startdato",
+          "representedVariables": [
+            {
+              "description": "Startdato/måletidspunktet for hendelsen",
+              "validPeriod": {
+                "start": 8034,
+                "stop": 18261
+              },
+              "valueDomain": {
+                "description": "N/A",
+                "unitOfMeasure": "N/A"
+              }
+            }
+          ],
+          "dataType": "Instant",
+          "variableRole": "Start"
+        },
+        {
+          "name": "STOP",
+          "label": "Stoppdato",
+          "representedVariables": [
+            {
+              "description": "Stoppdato/sluttdato for hendelsen",
+              "validPeriod": {
+                "start": 8034,
+                "stop": 18261
+              },
+              "valueDomain": {
+                "description": "N/A",
+                "unitOfMeasure": "N/A"
+              }
+            }
+          ],
+          "dataType": "Instant",
+          "variableRole": "Stop"
+        }
+      ]
+    }
+  ]
+}

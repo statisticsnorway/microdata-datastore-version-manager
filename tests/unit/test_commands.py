@@ -27,7 +27,7 @@ def setup_environment(monkeypatch):
 
 
 def test_update_release_status():
-    commands.set_status_for_pending_operation('TEST_DATASET', 'PENDING_RELEASE')
+    commands.set_status('TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test')
 
     with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
         pending_operations = json.load(f)
@@ -42,7 +42,21 @@ def test_update_release_status():
 
 def test_update_release_status_not_allowed():
     with pytest.raises(ReleaseStatusTransitionNotAllowed):
-        commands.set_status_for_pending_operation('TEST_DATASET', 'DRAFT')
+        commands.set_status('TEST_DATASET', 'DRAFT')
+
+
+def test_update_release_status_pending_delete():
+    commands.set_status('PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet')
+
+    with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
+        pending_operations = json.load(f)
+    assert pending_operations["version"] == "0.0.0.1"
+    assert {
+               "datasetName": "PERSON_SIVILSTAND",
+               "operation": "REMOVE",
+               "description": "Fjernet",
+               "releaseStatus": "PENDING_DELETE"
+           } in pending_operations["pendingOperations"]
 
 
 def test_new_draft_to_datastore():
