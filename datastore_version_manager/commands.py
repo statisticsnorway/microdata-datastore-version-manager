@@ -3,7 +3,7 @@ import shutil
 from datastore_version_manager.adapter import (
     datastore, built_datasets
 )
-from datastore_version_manager.adapter.constants import RELEASE_STATUSES
+from datastore_version_manager.adapter.constants import USER_CHANGEABLE_RELEASE_STATUSES
 from datastore_version_manager.domain import pending_operations
 
 
@@ -24,9 +24,9 @@ def new_draft_to_datastore(dataset_name: str, description: str,
 
 
 def set_status(dataset_name: str, release_status: str, operation: str = None, description: str = None):
-    if release_status not in RELEASE_STATUSES['MUTABLE']:
+    if release_status not in USER_CHANGEABLE_RELEASE_STATUSES['MUTABLE']:
         raise NoSuchReleaseStatus(
-            f'release status must be one of {RELEASE_STATUSES["MUTABLE"]}'
+            f'release status must be one of {USER_CHANGEABLE_RELEASE_STATUSES["MUTABLE"]}'
         )
     pending_operations.set_release_status(dataset_name, release_status, operation, description)
 
