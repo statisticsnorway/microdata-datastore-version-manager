@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "microdata-datastore-version-manager"
+name = "datastore-version-manager"
 version = "0.0.1"
 description = ""
 authors = ["microdata <microdata-dev@ssb.no>"]
