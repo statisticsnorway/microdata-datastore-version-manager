@@ -1,5 +1,3 @@
-from typing import Optional
-
 from datastore_version_manager.adapter import datastore
 from datastore_version_manager.adapter.constants import RELEASE_STATUS_ALLOWED_TRANSITIONS
 from datastore_version_manager.util import semver

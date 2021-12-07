@@ -1,7 +1,5 @@
-import glob
 import json
 import os
-from distutils.version import StrictVersion
 
 
 def get_pending_operations() -> dict:
@@ -31,7 +29,7 @@ def dataset_exists(dataset_name):
     )
 
 
-def new_dataset_directory(dataset_name: str) -> str:
+def new_dataset_directory(dataset_name: str) -> None:
     os.mkdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}')
     os.mkdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}')
 
@@ -45,18 +43,13 @@ def get_data_dir_path(dataset_name: str) -> str:
 
 
 def find_latest_in_metadata_all(dataset_name: str) -> str:
-    def convert_file_name(file_name: str) -> str:
-        return os.path.basename(file_name) \
-            .replace(f'metadata_all__', '') \
-            .replace('.json', '') \
-            .replace('_', '.')
+    # using the fact that versions in data_store.json are in descending order, first being draft data store version
+    datastore_info = get_datastore_info()
+    latest_version = datastore_info["versions"][1]["version"]
+    latest_version = "_".join(latest_version.replace('.', '_').split("_")[:-1])
 
-    file_names_with_paths = glob.glob(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/metadata_all__*.json')
-    versions = [convert_file_name(file_name) for file_name in file_names_with_paths]
-    versions.sort(key=StrictVersion)
-
-    newest_version = versions[-1].replace('.', '_')
-    with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/metadata_all__{newest_version}.json', encoding="utf-8") as f:
+    with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/metadata_all__{latest_version}.json',
+              encoding="utf-8") as f:
         metadata_all = json.load(f)
         try:
             dataset = next(
@@ -67,7 +60,7 @@ def find_latest_in_metadata_all(dataset_name: str) -> str:
         except StopIteration:
             raise DatasetNotFound(
                 f'Dataset {dataset_name} not found in newest metadata_all'
-                f' metadata_all__{newest_version}.json'
+                f' metadata_all__{latest_version}.json'
             )
 
 
