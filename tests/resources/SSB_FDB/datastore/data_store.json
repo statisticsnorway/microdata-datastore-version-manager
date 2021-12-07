@@ -13,6 +13,24 @@
          "updateType": "MINOR"
        },
        {
+         "version": "2.0.0.0",
+         "description": "Andre variabel og oppdatering av første",
+         "releaseTime": 1634814468,
+         "languageCode": "no",
+         "dataStructureUpdates": [
+           {
+             "description": "Første variabel",
+             "name": "PERSON_SIVILSTAND",
+             "operation": "ADD"
+           },
+           {
+             "description": "Første variabel",
+             "name": "SKATT_BRUTTOINNTEKT",
+             "operation": "CHANGE_DATA"
+           }
+         ]
+       },
+       {
          "version": "1.0.0.0",
          "description": "Første variabel",
          "releaseTime": 1634814468,
@@ -20,7 +38,7 @@
          "dataStructureUpdates": [
            {
              "description": "Første variabel",
-             "name": "BOSTED",
+             "name": "SKATT_BRUTTOINNTEKT",
              "operation": "ADD"
            }
          ]

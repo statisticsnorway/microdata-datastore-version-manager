@@ -1,0 +1,25 @@
+OPERATION_TYPES = [
+    'ADD',
+    'REMOVE',
+    'CHANGE_DATA',
+    'PATCH_METADATA'
+]
+
+USER_CHANGEABLE_RELEASE_STATUSES = {
+    'MUTABLE': [
+        'DRAFT',
+        'PENDING_RELEASE',
+        'PENDING_DELETE'
+    ],
+    'IMMUTABLE': [
+        'RELEASED',
+        'DELETED'
+    ]
+}
+
+RELEASE_STATUS_ALLOWED_TRANSITIONS = {
+    'DRAFT': ['PENDING_RELEASE'],
+    'PENDING_RELEASE': ['DRAFT'],
+    'RELEASED': ['DRAFT', 'PENDING_DELETE'],
+    'DELETED': []
+}

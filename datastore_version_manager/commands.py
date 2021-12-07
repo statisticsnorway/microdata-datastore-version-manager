@@ -1,8 +1,10 @@
 import shutil
 
 from datastore_version_manager.adapter import (
-    datastore, built_datasets, pending_operations
+    datastore, built_datasets
 )
+from datastore_version_manager.adapter.constants import USER_CHANGEABLE_RELEASE_STATUSES
+from datastore_version_manager.domain import pending_operations
 
 
 def new_draft_to_datastore(dataset_name: str, description: str,
@@ -18,15 +20,15 @@ def new_draft_to_datastore(dataset_name: str, description: str,
         f'{built_dataset_path}/{dataset_name}__0_0.parquet',
         f'{datastore.get_data_dir_path(dataset_name)}/{dataset_name}__0_0.parquet'
     )
-    pending_operations.add_new_draft(dataset_name, operation, description)
+    pending_operations.add_new_pending_operation(dataset_name, operation, "DRAFT", description)
 
 
-def set_status_for_pending_operation(dataset_name: str, release_status: str):
-    if release_status not in ["PENDING_RELEASE", "DRAFT"]:
+def set_status(dataset_name: str, release_status: str, operation: str = None, description: str = None):
+    if release_status not in USER_CHANGEABLE_RELEASE_STATUSES['MUTABLE']:
         raise NoSuchReleaseStatus(
-            'release status must be one of ["PENDING_RELEASE", "DRAFT"]'
+            f'release status must be one of {USER_CHANGEABLE_RELEASE_STATUSES["MUTABLE"]}'
         )
-    pending_operations.update_release_status(dataset_name, release_status)
+    pending_operations.set_release_status(dataset_name, release_status, operation, description)
 
 
 class NoSuchReleaseStatus(Exception):
