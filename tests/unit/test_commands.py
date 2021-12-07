@@ -20,7 +20,7 @@ def teardown_function():
 @pytest.fixture(autouse=True)
 def setup_environment(monkeypatch):
     monkeypatch.setenv('DATASTORE_ROOT_DIR', 'tests/resources/SSB_FDB')
-    monkeypatch.setenv('DATASET_BUILDER_OUTPUT_DIR', 'tests/resources/built_datasets')
+    monkeypatch.setenv('BUILT_DATASETS_DIR', 'tests/resources/built_datasets')
 
 
 def test_update_release_status():

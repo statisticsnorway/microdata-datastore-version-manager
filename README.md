@@ -22,7 +22,7 @@ poetry install
 ### Running without Docker
 You should add the appropriate environmental variables to your local system:
 ```sh
-export DATASET_BUILDER_OUTPUT_DIR=/output
+export BUILT_DATASETS_DIR=/built_datasets_dir
 export DATASTORE_ROOT_DIR=/datastore
 ```
 

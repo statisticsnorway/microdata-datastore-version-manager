@@ -5,8 +5,8 @@ services:
     image: datastore-version-manager:local-latest
     restart: 'no'
     environment:
-      DATASET_BUILDER_OUTPUT_DIR: /output
+      BUILT_DATASETS_DIR: /built_datasets_dir
       DATASTORE_ROOT_DIR: /datastore
     volumes:
       -  <absolute path>/datastore:/datastore
-      -  <absolute path>/output:/output
+      -  <absolute path>/built_datasets_dir:/built_datasets_dir
