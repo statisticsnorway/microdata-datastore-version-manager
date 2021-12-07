@@ -1,9 +1,10 @@
 import shutil
 
 from datastore_version_manager.adapter import (
-    datastore, built_datasets, pending_operations
+    datastore, built_datasets
 )
 from datastore_version_manager.adapter.constants import RELEASE_STATUSES
+from datastore_version_manager.domain import pending_operations
 
 
 def new_draft_to_datastore(dataset_name: str, description: str,

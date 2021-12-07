@@ -2,7 +2,7 @@ import pytest
 import shutil
 import json
 from datastore_version_manager import commands
-from datastore_version_manager.adapter.pending_operations import ReleaseStatusTransitionNotAllowed
+from datastore_version_manager.domain.pending_operations import ReleaseStatusTransitionNotAllowed
 
 
 def setup_function():
