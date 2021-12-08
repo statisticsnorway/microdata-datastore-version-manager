@@ -29,6 +29,13 @@ def dataset_exists(dataset_name):
     )
 
 
+def draft_dataset_exists(dataset_name: str):
+    data_store = get_datastore_info()
+    datasets = data_store["versions"][0]["dataStructureUpdates"]
+    dataset_list = [dataset for dataset in datasets if dataset['name'] == dataset_name]
+    return True if len(dataset_list)>0 else False
+
+
 def new_dataset_directory(dataset_name: str) -> None:
     os.mkdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}')
     os.mkdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}')
