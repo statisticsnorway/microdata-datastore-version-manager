@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+  datastore-version-manager:
+    image: datastore-version-manager:local-latest
+    restart: 'no'
+    environment:
+      BUILT_DATASETS_DIR: /built_datasets_dir
+      DATASTORE_ROOT_DIR: /datastore
+    volumes:
+      -  <absolute path>/datastore:/datastore
+      -  <absolute path>/built_datasets_dir:/built_datasets_dir
