@@ -1,5 +1,5 @@
 import shutil
-
+import os
 import pytest
 
 from datastore_version_manager.adapter import datastore
@@ -27,7 +27,14 @@ def setup_environment(monkeypatch):
 
 
 def test_draft_dataset_exists():
-    datastore.draft_dataset_exists('TEST_DATASET')
-    assert datastore.draft_dataset_exists('TEST_DATASET') == True
+    dataset_name = 'TEST_DATASET'
+    datastore.draft_dataset_exists(dataset_name)
+    assert datastore.draft_dataset_exists(dataset_name) == True
 
+
+def test_draft_dataset_delete():
+    dataset_name = 'TEST_DATASET'
+    datastore.draft_dataset_delete(dataset_name)
+    assert os.path.isdir(datastore.get_metadata_dir_path(dataset_name)) == False
+    assert os.path.isdir(datastore.get_data_dir_path(dataset_name)) == False
 

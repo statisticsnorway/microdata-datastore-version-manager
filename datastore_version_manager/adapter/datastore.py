@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 
 
 def get_pending_operations() -> dict:
@@ -34,6 +35,18 @@ def draft_dataset_exists(dataset_name: str):
     datasets = data_store["versions"][0]["dataStructureUpdates"]
     dataset_list = [dataset for dataset in datasets if dataset['name'] == dataset_name]
     return True if len(dataset_list)>0 else False
+
+
+def draft_dataset_delete(dataset_name: str):
+    metadata_dir = get_metadata_dir_path(dataset_name)
+    os.remove(f'{metadata_dir}/{dataset_name}__0_0_0.json')
+    if len(os.listdir(metadata_dir)) == 0:
+        shutil.rmtree(metadata_dir)
+
+    data_dir = get_data_dir_path(dataset_name)
+    os.remove(f'{data_dir}/{dataset_name}__0_0.parquet')
+    if len(os.listdir(data_dir)) == 0:
+        shutil.rmtree(data_dir)
 
 
 def new_dataset_directory(dataset_name: str) -> None:
