@@ -3,6 +3,7 @@ import os
 import pytest
 
 from datastore_version_manager.adapter import datastore
+from datastore_version_manager.adapter.datastore import DatasetNotFound
 
 
 def setup_function():
@@ -38,3 +39,18 @@ def test_draft_dataset_delete():
     assert os.path.isdir(datastore.get_metadata_dir_path(dataset_name)) == False
     assert os.path.isdir(datastore.get_data_dir_path(dataset_name)) == False
 
+
+def test_remove_dataset_from_pending_operations():
+    dataset_name = 'TEST_DATASET'
+    datastore.remove_dataset_from_pending_operations(dataset_name)
+    pending_operations_list = datastore.get_pending_operations()["pendingOperations"]
+    assert len(pending_operations_list) == 1
+    if any(dataset['datasetName'] == dataset_name for dataset in pending_operations_list):
+        assert False
+
+
+def test_remove_non_existing_dataset_from_pending_operations():
+    try:
+        datastore.remove_dataset_from_pending_operations("DOES_NOT_EXIST")
+    except DatasetNotFound:
+        assert True

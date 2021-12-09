@@ -13,6 +13,20 @@ def write_pending_operations(pending_operation: dict):
         json.dump(pending_operation, f, indent=4)
 
 
+def remove_dataset_from_pending_operations(dataset_name: str):
+    pending_operations_dict = get_pending_operations()
+    pending_operations = pending_operations_dict["pendingOperations"]
+    if not any(dataset['datasetName'] == dataset_name for dataset in pending_operations):
+        raise DatasetNotFound(
+            f'Dataset {dataset_name} not found in pending_operations.json'
+        )
+    for i in range(len(pending_operations)):
+        if pending_operations[i]['datasetName'] == dataset_name:
+            del pending_operations[i]
+            break
+    write_pending_operations(pending_operations_dict)
+
+
 def get_datastore_info() -> dict:
     with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json', encoding="utf-8") as f:
         return json.load(f)
@@ -23,7 +37,7 @@ def write_datastore_info(datastore_dict: dict):
         return json.dump(datastore_dict, f, indent=4)
 
 
-def dataset_exists(dataset_name):
+def dataset_exists(dataset_name: str):
     return (
             os.path.isdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}') and
             os.path.isdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}')

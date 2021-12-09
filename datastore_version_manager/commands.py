@@ -31,5 +31,19 @@ def set_status(dataset_name: str, release_status: str, operation: str = None, de
     pending_operations.set_release_status(dataset_name, release_status, operation, description)
 
 
+def hard_delete(dataset_name: str):
+    if not datastore.draft_dataset_exists(dataset_name):
+        raise NoDraftDatasetWithThisName(
+            f'{dataset_name} release status not in DRAFT, PENDING_DELETE, PENDING_RELEASE'
+        )
+    datastore.remove_dataset_from_pending_operations(dataset_name)
+    datastore.draft_dataset_delete(dataset_name)
+    # variabelen slettes fra data_store.json? -> ikke sikkert!
+
+
 class NoSuchReleaseStatus(Exception):
+    pass
+
+
+class NoDraftDatasetWithThisName(Exception):
     pass
