@@ -1,5 +1,5 @@
 {
-  "name": "TEST_DATASET",
+  "name": "TEST_DATASET_PARTITIONED",
   "temporalCoverage": {
     "start": -15492,
     "stop": 18583
@@ -26,7 +26,7 @@
     }
   ],
   "measureVariable": {
-    "name": "TEST_DATASET",
+    "name": "TEST_DATASET_PARTITIONED",
     "label": "Sivilstand",
     "dataType": "STRING",
     "representedVariables": [

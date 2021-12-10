@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 
 
 def get_pending_operations() -> dict:
@@ -12,6 +13,20 @@ def write_pending_operations(pending_operation: dict):
         json.dump(pending_operation, f, indent=4)
 
 
+def remove_dataset_from_pending_operations(dataset_name: str):
+    pending_operations_dict = get_pending_operations()
+    pending_operations = pending_operations_dict["pendingOperations"]
+    if not any(dataset['datasetName'] == dataset_name for dataset in pending_operations):
+        raise DatasetNotFound(
+            f'Dataset {dataset_name} not found in pending_operations.json'
+        )
+    for i in range(len(pending_operations)):
+        if pending_operations[i]['datasetName'] == dataset_name:
+            del pending_operations[i]
+            break
+    write_pending_operations(pending_operations_dict)
+
+
 def get_datastore_info() -> dict:
     with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json', encoding="utf-8") as f:
         return json.load(f)
@@ -22,11 +37,36 @@ def write_datastore_info(datastore_dict: dict):
         return json.dump(datastore_dict, f, indent=4)
 
 
-def dataset_exists(dataset_name):
+def dataset_exists(dataset_name: str):
     return (
             os.path.isdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}') and
             os.path.isdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}')
     )
+
+
+def draft_dataset_exists(dataset_name: str):
+    pending_operations = get_pending_operations()
+    datasets = pending_operations["pendingOperations"]
+    dataset_list = [dataset for dataset in datasets if dataset['datasetName'] == dataset_name]
+    return len(dataset_list) > 0
+
+
+def delete_draft_dataset(dataset_name: str):
+    metadata_dir = get_metadata_dir_path(dataset_name)
+    os.remove(f'{metadata_dir}/{dataset_name}__0_0_0.json')
+    if len(os.listdir(metadata_dir)) == 0:
+        shutil.rmtree(metadata_dir)
+
+    data_dir = get_data_dir_path(dataset_name)
+    single_parquet = f'{data_dir}/{dataset_name}__0_0.parquet'
+    if os.path.exists(single_parquet):
+        os.remove(single_parquet)
+    else:
+        partitioned_parquet = f'{data_dir}/{dataset_name}__0_0'
+        shutil.rmtree(partitioned_parquet)
+
+    if len(os.listdir(data_dir)) == 0:
+        shutil.rmtree(data_dir)
 
 
 def new_dataset_directory(dataset_name: str) -> None:

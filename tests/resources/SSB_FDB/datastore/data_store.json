@@ -9,6 +9,11 @@
          "releaseTime": 1635299291,
          "languageCode": "no",
          "dataStructureUpdates": [
+           {
+             "description": "Første variabel",
+             "name": "TEST_DATASET",
+             "operation": "ADD"
+           }
          ],
          "updateType": "MINOR"
        },

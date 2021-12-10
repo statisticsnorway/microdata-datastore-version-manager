@@ -6,6 +6,12 @@
             "operation" : "ADD",
             "description" : "Nytt datasett om test",
             "releaseStatus": "DRAFT"
+        },
+        {
+            "datasetName" : "ANOTHER_TEST_DATASET",
+            "operation" : "ADD",
+            "description" : "Enda et datasett om test",
+            "releaseStatus": "DRAFT"
         }
     ]
 }

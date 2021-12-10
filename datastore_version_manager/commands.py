@@ -31,5 +31,10 @@ def set_status(dataset_name: str, release_status: str, operation: str = None, de
     pending_operations.set_release_status(dataset_name, release_status, operation, description)
 
 
+def hard_delete(dataset_name: str):
+    datastore.remove_dataset_from_pending_operations(dataset_name)
+    datastore.delete_draft_dataset(dataset_name)
+
+
 class NoSuchReleaseStatus(Exception):
     pass
