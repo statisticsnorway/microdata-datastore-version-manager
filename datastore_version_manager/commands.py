@@ -32,17 +32,9 @@ def set_status(dataset_name: str, release_status: str, operation: str = None, de
 
 
 def hard_delete(dataset_name: str):
-    if not datastore.draft_dataset_exists(dataset_name):
-        raise NoDraftDatasetWithThisName(
-            f'{dataset_name} release status not in DRAFT, PENDING_DELETE, PENDING_RELEASE'
-        )
     datastore.remove_dataset_from_pending_operations(dataset_name)
     datastore.delete_draft_dataset(dataset_name)
 
 
 class NoSuchReleaseStatus(Exception):
-    pass
-
-
-class NoDraftDatasetWithThisName(Exception):
     pass
