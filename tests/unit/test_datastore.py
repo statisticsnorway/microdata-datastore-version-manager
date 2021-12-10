@@ -29,13 +29,19 @@ def setup_environment(monkeypatch):
 
 def test_draft_dataset_exists():
     dataset_name = 'TEST_DATASET'
-    datastore.draft_dataset_exists(dataset_name)
     assert datastore.draft_dataset_exists(dataset_name) == True
 
 
-def test_draft_dataset_delete():
+def test_delete_draft_dataset_single_parquet():
     dataset_name = 'TEST_DATASET'
-    datastore.draft_dataset_delete(dataset_name)
+    datastore.delete_draft_dataset(dataset_name)
+    assert os.path.isdir(datastore.get_metadata_dir_path(dataset_name)) == False
+    assert os.path.isdir(datastore.get_data_dir_path(dataset_name)) == False
+
+
+def test_delete_draft_dataset_partitioned_parquet():
+    dataset_name = 'TEST_DATASET_PARTITIONED'
+    datastore.delete_draft_dataset(dataset_name)
     assert os.path.isdir(datastore.get_metadata_dir_path(dataset_name)) == False
     assert os.path.isdir(datastore.get_data_dir_path(dataset_name)) == False
 
@@ -45,7 +51,7 @@ def test_remove_dataset_from_pending_operations():
     datastore.remove_dataset_from_pending_operations(dataset_name)
     pending_operations_list = datastore.get_pending_operations()["pendingOperations"]
     assert len(pending_operations_list) == 1
-    if any(dataset['datasetName'] == dataset_name for dataset in pending_operations_list):
+    if datastore.draft_dataset_exists(dataset_name):
         assert False
 
 

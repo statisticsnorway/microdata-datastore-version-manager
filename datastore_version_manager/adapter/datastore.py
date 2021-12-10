@@ -45,20 +45,26 @@ def dataset_exists(dataset_name: str):
 
 
 def draft_dataset_exists(dataset_name: str):
-    data_store = get_datastore_info()
-    datasets = data_store["versions"][0]["dataStructureUpdates"]
-    dataset_list = [dataset for dataset in datasets if dataset['name'] == dataset_name]
-    return True if len(dataset_list)>0 else False
+    pending_operations = get_pending_operations()
+    datasets = pending_operations["pendingOperations"]
+    dataset_list = [dataset for dataset in datasets if dataset['datasetName'] == dataset_name]
+    return len(dataset_list) > 0
 
 
-def draft_dataset_delete(dataset_name: str):
+def delete_draft_dataset(dataset_name: str):
     metadata_dir = get_metadata_dir_path(dataset_name)
     os.remove(f'{metadata_dir}/{dataset_name}__0_0_0.json')
     if len(os.listdir(metadata_dir)) == 0:
         shutil.rmtree(metadata_dir)
 
     data_dir = get_data_dir_path(dataset_name)
-    os.remove(f'{data_dir}/{dataset_name}__0_0.parquet')
+    single_parquet = f'{data_dir}/{dataset_name}__0_0.parquet'
+    if os.path.exists(single_parquet):
+        os.remove(single_parquet)
+    else:
+        partitioned_parquet = f'{data_dir}/{dataset_name}__0_0'
+        shutil.rmtree(partitioned_parquet)
+
     if len(os.listdir(data_dir)) == 0:
         shutil.rmtree(data_dir)
 

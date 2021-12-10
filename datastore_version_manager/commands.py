@@ -37,8 +37,7 @@ def hard_delete(dataset_name: str):
             f'{dataset_name} release status not in DRAFT, PENDING_DELETE, PENDING_RELEASE'
         )
     datastore.remove_dataset_from_pending_operations(dataset_name)
-    datastore.draft_dataset_delete(dataset_name)
-    # variabelen slettes fra data_store.json? -> ikke sikkert!
+    datastore.delete_draft_dataset(dataset_name)
 
 
 class NoSuchReleaseStatus(Exception):
