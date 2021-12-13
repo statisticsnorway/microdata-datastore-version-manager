@@ -44,19 +44,3 @@ def test_delete_draft_dataset_partitioned_parquet():
     datastore.delete_draft_dataset(dataset_name)
     assert os.path.isdir(datastore.get_metadata_dir_path(dataset_name)) == False
     assert os.path.isdir(datastore.get_data_dir_path(dataset_name)) == False
-
-
-def test_remove_dataset_from_pending_operations():
-    dataset_name = 'TEST_DATASET'
-    datastore.remove_dataset_from_pending_operations(dataset_name)
-    pending_operations_list = datastore.get_pending_operations()["pendingOperations"]
-    assert len(pending_operations_list) == 1
-    if datastore.draft_dataset_exists(dataset_name):
-        assert False
-
-
-def test_remove_non_existing_dataset_from_pending_operations():
-    try:
-        datastore.remove_dataset_from_pending_operations("DOES_NOT_EXIST")
-    except DatasetNotFound:
-        assert True
