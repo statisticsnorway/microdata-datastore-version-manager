@@ -3,8 +3,8 @@ from datastore_version_manager.adapter.constants import RELEASE_STATUS_ALLOWED_T
 from datastore_version_manager.util import semver
 
 
-def add_new_pending_operation(dataset_name: str, operation: str, release_status: str,
-                              description: str) -> None:
+def add_new(dataset_name: str, operation: str, release_status: str,
+            description: str) -> None:
     pending_operations = datastore.get_pending_operations()
     pending_operations_list = pending_operations["pendingOperations"]
     pending_operations_list.append({
@@ -17,6 +17,20 @@ def add_new_pending_operation(dataset_name: str, operation: str, release_status:
         pending_operations["version"]
     )
     datastore.write_pending_operations(pending_operations)
+
+
+def remove(dataset_name: str):
+    pending_operations_dict = datastore.get_pending_operations()
+    pending_operations = pending_operations_dict["pendingOperations"]
+    if not any(dataset['datasetName'] == dataset_name for dataset in pending_operations):
+        raise datastore.DatasetNotFound(
+            f'Dataset {dataset_name} not found in pending_operations.json'
+        )
+    for i in range(len(pending_operations)):
+        if pending_operations[i]['datasetName'] == dataset_name:
+            del pending_operations[i]
+            break
+    datastore.write_pending_operations(pending_operations_dict)
 
 
 def set_release_status(dataset_name: str, release_status: str, operation: str,
@@ -33,7 +47,9 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         dataset_on_pending_operations_list = None
 
     if dataset_on_pending_operations_list:
-        check_if_transition_allowed(dataset_on_pending_operations_list["releaseStatus"], release_status)
+        __check_if_transition_allowed(
+            dataset_on_pending_operations_list["releaseStatus"], release_status
+        )
         dataset_on_pending_operations_list["releaseStatus"] = release_status
         pending_operations["version"] = semver.bump_draft_version(
             pending_operations["version"]
@@ -43,13 +59,13 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         datastore.find_latest_in_metadata_all(dataset_name)
         # dataset found -> its release status is RELEASED
         # dataset not found -> it needs to be ADDED first
-        check_if_transition_allowed('RELEASED', release_status)
-        add_new_pending_operation(
+        __check_if_transition_allowed('RELEASED', release_status)
+        add_new(
             dataset_name, operation, release_status, description
         )
 
 
-def check_if_transition_allowed(old_release_status, new_release_status):
+def __check_if_transition_allowed(old_release_status, new_release_status):
     if new_release_status not in RELEASE_STATUS_ALLOWED_TRANSITIONS[old_release_status]:
         raise ReleaseStatusTransitionNotAllowed(
             f'Transition from {old_release_status} to {new_release_status} is not allowed'
