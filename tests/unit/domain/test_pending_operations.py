@@ -10,7 +10,7 @@ def setup_environment(monkeypatch):
 
 
 def test_remove_dataset_from_pending_operations():
-    dataset_name = 'TEST_DATASET'
+    dataset_name = 'ANOTHER_TEST_DATASET'
     pending_operations.remove(dataset_name)
     pending_operations_list = datastore.get_pending_operations()["pendingOperations"]
     assert len(pending_operations_list) == 1
