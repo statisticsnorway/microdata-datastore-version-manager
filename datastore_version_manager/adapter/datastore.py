@@ -81,29 +81,6 @@ def get_metadata_dir_path(dataset_name: str) -> str:
 def get_data_dir_path(dataset_name: str) -> str:
     return f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
 
-# Deprecated
-# Do we need this method?
-def find_latest_in_metadata_all(dataset_name: str) -> str:
-    # using the fact that versions in data_store.json are in descending order, first being draft data store version
-    datastore_info = get_datastore_info()
-    latest_version = datastore_info["versions"][1]["version"]
-    latest_version = "_".join(latest_version.replace('.', '_').split("_")[:-1])
-
-    with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/metadata_all__{latest_version}.json',
-              encoding="utf-8") as f:
-        metadata_all = json.load(f)
-        try:
-            dataset = next(
-                data_structure for data_structure in metadata_all['dataStructures']
-                if data_structure["name"] == dataset_name
-            )
-            return dataset
-        except StopIteration:
-            raise DatasetNotFound(
-                f'Dataset {dataset_name} not found in newest metadata_all'
-                f' metadata_all__{latest_version}.json'
-            )
-
 
 def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
     data_store = get_datastore_info()

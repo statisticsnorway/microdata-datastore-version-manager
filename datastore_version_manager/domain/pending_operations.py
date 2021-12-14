@@ -41,15 +41,12 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         )
         datastore.write_pending_operations(pending_operations)
     else:
-        # Deprecated, we use data_store.json instead
-        # datastore.find_latest_in_metadata_all(dataset_name)
         if datastore.is_dataset_in_data_store(dataset_name, 'RELEASED'):
-            # dataset found -> its release status is RELEASED
-            # dataset not found -> it needs to be ADDED first
             check_if_transition_allowed('RELEASED', release_status)
             add_new_pending_operation(
                 dataset_name, operation, release_status, description
             )
+        # dataset not found -> it needs to be ADDED first
         else:
             raise DatasetNotFound(
                 f'Dataset {dataset_name} with status RELEASED not found in data_store'
