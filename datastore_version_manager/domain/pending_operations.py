@@ -63,17 +63,10 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
                 dataset_name, operation, release_status, description
             )
         # dataset not found -> it needs to be ADDED first
-<<<<<<< HEAD
-        __check_if_transition_allowed('RELEASED', release_status)
-        add_new(
-            dataset_name, operation, release_status, description
-        )
-=======
         else:
             raise DatasetNotFound(
                 f'Dataset {dataset_name} with status RELEASED not found in data_store'
             )
->>>>>>> ae467d1d497ce4a3b0bb5c908c0309856957ed59
 
 
 def __check_if_transition_allowed(old_release_status, new_release_status):

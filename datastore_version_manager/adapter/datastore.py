@@ -13,8 +13,6 @@ def write_pending_operations(pending_operation: dict):
         json.dump(pending_operation, f, indent=4)
 
 
-<<<<<<< HEAD
-=======
 def remove_dataset_from_pending_operations(dataset_name: str):
     pending_operations_dict = get_pending_operations()
     pending_operations = pending_operations_dict["dataStructureUpdates"]
@@ -29,7 +27,6 @@ def remove_dataset_from_pending_operations(dataset_name: str):
     write_pending_operations(pending_operations_dict)
 
 
->>>>>>> ae467d1d497ce4a3b0bb5c908c0309856957ed59
 def get_datastore_info() -> dict:
     with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json', encoding="utf-8") as f:
         return json.load(f)
