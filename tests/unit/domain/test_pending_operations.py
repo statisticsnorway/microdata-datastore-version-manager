@@ -28,7 +28,7 @@ def setup_environment(monkeypatch):
 def test_remove_dataset_from_pending_operations():
     dataset_name = 'ANOTHER_TEST_DATASET'
     pending_operations.remove(dataset_name)
-    data_structure_updates= datastore.get_pending_operations()["dataStructureUpdates"]
+    data_structure_updates = datastore.get_pending_operations()["dataStructureUpdates"]
     assert len(data_structure_updates) == 1
     if datastore.draft_dataset_exists(dataset_name):
         assert False

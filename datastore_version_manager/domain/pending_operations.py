@@ -1,6 +1,6 @@
 from datastore_version_manager.adapter import datastore
 from datastore_version_manager.adapter.constants import RELEASE_STATUS_ALLOWED_TRANSITIONS
-from datastore_version_manager.util import semver
+from datastore_version_manager.util import semver, date
 
 
 def add_new(dataset_name: str, operation: str, release_status: str,
@@ -13,15 +13,18 @@ def add_new(dataset_name: str, operation: str, release_status: str,
         "description": description,
         "releaseStatus": release_status
     })
+
+    pending_operations["releaseTime"] = date.seconds_since_epoch()
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
     )
+    
     datastore.write_pending_operations(pending_operations)
 
 
 def remove(dataset_name: str):
-    pending_operations_dict = datastore.get_pending_operations()
-    datastructure_updates = pending_operations_dict["dataStructureUpdates"]
+    pending_operations = datastore.get_pending_operations()
+    datastructure_updates = pending_operations["dataStructureUpdates"]
     if not any(dataset['name'] == dataset_name for dataset in datastructure_updates):
         raise datastore.DatasetNotFound(
             f'Dataset {dataset_name} not found in pending_operations.json'
@@ -30,7 +33,9 @@ def remove(dataset_name: str):
         if datastructure_updates[i]['name'] == dataset_name:
             del datastructure_updates[i]
             break
-    datastore.write_pending_operations(pending_operations_dict)
+
+    pending_operations["releaseTime"] = date.seconds_since_epoch()
+    datastore.write_pending_operations(pending_operations)
 
 
 def set_release_status(dataset_name: str, release_status: str, operation: str,
@@ -52,6 +57,8 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         dataset_on_pending_operations_list["releaseStatus"] = release_status
         dataset_on_pending_operations_list["operation"] = operation
         dataset_on_pending_operations_list["description"] = description
+
+        pending_operations["releaseTime"] = date.seconds_since_epoch()
         pending_operations["version"] = semver.bump_draft_version(
             pending_operations["version"]
         )
