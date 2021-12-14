@@ -20,7 +20,7 @@ def new_draft_to_datastore(dataset_name: str, description: str,
         f'{built_dataset_path}/{dataset_name}__0_0.parquet',
         f'{datastore.get_data_dir_path(dataset_name)}/{dataset_name}__0_0.parquet'
     )
-    pending_operations.add_new_pending_operation(dataset_name, operation, "DRAFT", description)
+    pending_operations.add_new(dataset_name, operation, "DRAFT", description)
 
 
 def set_status(dataset_name: str, release_status: str, operation: str = None, description: str = None):
@@ -32,7 +32,7 @@ def set_status(dataset_name: str, release_status: str, operation: str = None, de
 
 
 def hard_delete(dataset_name: str):
-    datastore.remove_dataset_from_pending_operations(dataset_name)
+    pending_operations.remove(dataset_name)
     datastore.delete_draft_dataset(dataset_name)
 
 
