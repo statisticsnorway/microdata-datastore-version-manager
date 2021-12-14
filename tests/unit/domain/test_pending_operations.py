@@ -1,6 +1,22 @@
 import pytest
+import shutil
 from datastore_version_manager.adapter import datastore
 from datastore_version_manager.domain import pending_operations
+
+
+def setup_function():
+    shutil.copytree(
+        'tests/resources',
+        'tests/resources_backup'
+    )
+
+
+def teardown_function():
+    shutil.rmtree('tests/resources')
+    shutil.move(
+        'tests/resources_backup',
+        'tests/resources'
+    )
 
 
 @pytest.fixture(autouse=True)
@@ -12,8 +28,8 @@ def setup_environment(monkeypatch):
 def test_remove_dataset_from_pending_operations():
     dataset_name = 'ANOTHER_TEST_DATASET'
     pending_operations.remove(dataset_name)
-    pending_operations_list = datastore.get_pending_operations()["pendingOperations"]
-    assert len(pending_operations_list) == 1
+    data_structure_updates= datastore.get_pending_operations()["dataStructureUpdates"]
+    assert len(data_structure_updates) == 1
     if datastore.draft_dataset_exists(dataset_name):
         assert False
 

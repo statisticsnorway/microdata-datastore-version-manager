@@ -5,21 +5,6 @@
     "languageCode": "no",
     "dataStructureUpdates": [
         {
-<<<<<<< HEAD
-            "datasetName": "TEST_DATASET",
-            "operation": "ADD",
-            "description": "Nytt datasett om test",
-            "releaseStatus": "DRAFT"
-        },
-        {
-            "datasetName": "ANOTHER_TEST_DATASET",
-            "operation": "ADD",
-            "description": "Enda et datasett om test",
-            "releaseStatus": "DRAFT"
-        }
-    ]
-}
-=======
             "description": "Første variabel",
             "name": "TEST_DATASET",
             "operation": "ADD",
@@ -34,4 +19,3 @@
     ],
     "updateType": "MINOR"
 }
->>>>>>> ae467d1d497ce4a3b0bb5c908c0309856957ed59

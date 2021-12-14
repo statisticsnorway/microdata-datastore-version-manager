@@ -21,14 +21,14 @@ def add_new(dataset_name: str, operation: str, release_status: str,
 
 def remove(dataset_name: str):
     pending_operations_dict = datastore.get_pending_operations()
-    pending_operations = pending_operations_dict["pendingOperations"]
-    if not any(dataset['datasetName'] == dataset_name for dataset in pending_operations):
+    datastructure_updates = pending_operations_dict["dataStructureUpdates"]
+    if not any(dataset['name'] == dataset_name for dataset in datastructure_updates):
         raise datastore.DatasetNotFound(
             f'Dataset {dataset_name} not found in pending_operations.json'
         )
-    for i in range(len(pending_operations)):
-        if pending_operations[i]['datasetName'] == dataset_name:
-            del pending_operations[i]
+    for i in range(len(datastructure_updates)):
+        if datastructure_updates[i]['name'] == dataset_name:
+            del datastructure_updates[i]
             break
     datastore.write_pending_operations(pending_operations_dict)
 
@@ -58,8 +58,8 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         datastore.write_pending_operations(pending_operations)
     else:
         if datastore.is_dataset_in_data_store(dataset_name, 'RELEASED'):
-            check_if_transition_allowed('RELEASED', release_status)
-            add_new_pending_operation(
+            __check_if_transition_allowed('RELEASED', release_status)
+            add_new(
                 dataset_name, operation, release_status, description
             )
         # dataset not found -> it needs to be ADDED first
