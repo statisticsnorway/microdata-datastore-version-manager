@@ -28,8 +28,7 @@ def setup_environment(monkeypatch):
 
 
 def test_draft_dataset_exists():
-    dataset_name = 'TEST_DATASET'
-    assert datastore.draft_dataset_exists(dataset_name) == True
+    assert datastore.draft_dataset_exists('TEST_DATASET') == True
 
 
 def test_delete_draft_dataset_single_parquet():
@@ -49,10 +48,15 @@ def test_delete_draft_dataset_partitioned_parquet():
 def test_remove_dataset_from_pending_operations():
     dataset_name = 'TEST_DATASET'
     datastore.remove_dataset_from_pending_operations(dataset_name)
-    pending_operations_list = datastore.get_pending_operations()["pendingOperations"]
+    pending_operations_list = datastore.get_pending_operations()["dataStructureUpdates"]
     assert len(pending_operations_list) == 1
     if datastore.draft_dataset_exists(dataset_name):
         assert False
+
+
+def test_is_dataset_in_data_store():
+    assert datastore.is_dataset_in_data_store('SKATT_BRUTTOINNTEKT', 'RELEASED') == True
+    assert datastore.is_dataset_in_data_store('SKATT_BRUTTOINNTEKT', 'DELETED') == False
 
 
 def test_remove_non_existing_dataset_from_pending_operations():

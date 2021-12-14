@@ -1,52 +1,41 @@
 {
-    "name": "no.ssb.fdb",
-     "label": "Data fra SSB",
-     "description": "Registerdata som inngår i SSBs statistikkproduksjon",
-     "versions": [
-       {
-         "version": "0.0.0.0",
-         "description": "Draft",
-         "releaseTime": 1635299291,
-         "languageCode": "no",
-         "dataStructureUpdates": [
-           {
-             "description": "Første variabel",
-             "name": "TEST_DATASET",
-             "operation": "ADD"
-           }
-         ],
-         "updateType": "MINOR"
-       },
-       {
-         "version": "2.0.0.0",
-         "description": "Andre variabel og oppdatering av første",
-         "releaseTime": 1634814468,
-         "languageCode": "no",
-         "dataStructureUpdates": [
-           {
-             "description": "Første variabel",
-             "name": "PERSON_SIVILSTAND",
-             "operation": "ADD"
-           },
-           {
-             "description": "Første variabel",
-             "name": "SKATT_BRUTTOINNTEKT",
-             "operation": "CHANGE_DATA"
-           }
-         ]
-       },
-       {
-         "version": "1.0.0.0",
-         "description": "Første variabel",
-         "releaseTime": 1634814468,
-         "languageCode": "no",
-         "dataStructureUpdates": [
-           {
-             "description": "Første variabel",
-             "name": "SKATT_BRUTTOINNTEKT",
-             "operation": "ADD"
-           }
-         ]
-       }
-     ]
-   }
+  "name": "no.ssb.fdb",
+  "label": "Data fra SSB",
+  "description": "Registerdata som inngår i SSBs statistikkproduksjon",
+  "versions": [
+    {
+      "version": "2.0.0.0",
+      "description": "Andre variabel og oppdatering av første",
+      "releaseTime": 1634814468,
+      "languageCode": "no",
+      "dataStructureUpdates": [
+        {
+          "description": "Første variabel",
+          "name": "PERSON_SIVILSTAND",
+          "operation": "ADD",
+          "releaseStatus": "RELEASED"
+        },
+        {
+          "description": "Første variabel",
+          "name": "SKATT_BRUTTOINNTEKT",
+          "operation": "CHANGE_DATA",
+          "releaseStatus": "RELEASED"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0.0",
+      "description": "Første variabel",
+      "releaseTime": 1634814468,
+      "languageCode": "no",
+      "dataStructureUpdates": [
+        {
+          "description": "Første variabel",
+          "name": "SKATT_BRUTTOINNTEKT",
+          "operation": "ADD",
+          "releaseStatus": "RELEASED"
+        }
+      ]
+    }
+  ]
+}

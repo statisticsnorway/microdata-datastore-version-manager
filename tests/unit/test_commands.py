@@ -31,13 +31,13 @@ def test_update_release_status():
 
     with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
         pending_operations = json.load(f)
-    assert pending_operations["version"] == "0.0.0.1"
+    assert pending_operations["version"] == "0.0.0.2"
     assert {
-               "datasetName": "TEST_DATASET",
+               "name": "TEST_DATASET",
                "operation": "ADD",
                "description": "Nytt datasett om test",
                "releaseStatus": "PENDING_RELEASE"
-           } in pending_operations["pendingOperations"]
+           } in pending_operations["dataStructureUpdates"]
 
 
 def test_update_release_status_not_allowed():
@@ -50,23 +50,23 @@ def test_update_release_status_pending_delete():
 
     with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
         pending_operations = json.load(f)
-    assert pending_operations["version"] == "0.0.0.1"
+    assert pending_operations["version"] == "0.0.0.2"
     assert {
-               "datasetName": "PERSON_SIVILSTAND",
+               "name": "PERSON_SIVILSTAND",
                "operation": "REMOVE",
                "description": "Fjernet",
                "releaseStatus": "PENDING_DELETE"
-           } in pending_operations["pendingOperations"]
+           } in pending_operations["dataStructureUpdates"]
 
 
 def test_new_draft_to_datastore():
     commands.new_draft_to_datastore('NEW_VARIABLE', 'Første variabel', 'ADD')
     with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
         pending_operations = json.load(f)
-    assert pending_operations["version"] == "0.0.0.1"
+    assert pending_operations["version"] == "0.0.0.2"
     assert {
-               "datasetName": "NEW_VARIABLE",
+               "name": "NEW_VARIABLE",
                "operation": "ADD",
                "description": "Første variabel",
                "releaseStatus": "DRAFT"
-           } in pending_operations["pendingOperations"]
+           } in pending_operations["dataStructureUpdates"]
