@@ -1,6 +1,8 @@
 from datastore_version_manager.adapter import datastore
-from datastore_version_manager.adapter.constants import RELEASE_STATUS_ALLOWED_TRANSITIONS
 from datastore_version_manager.util import semver, date
+from datastore_version_manager.adapter.constants import (
+    RELEASE_STATUS_ALLOWED_TRANSITIONS
+)
 
 
 def add_new(dataset_name: str, operation: str, release_status: str,
@@ -18,14 +20,16 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
     )
-    
     datastore.write_pending_operations(pending_operations)
 
 
 def remove(dataset_name: str):
     pending_operations = datastore.get_pending_operations()
     datastructure_updates = pending_operations["dataStructureUpdates"]
-    if not any(dataset['name'] == dataset_name for dataset in datastructure_updates):
+    dataset_in_pending_operations = any(
+        dataset['name'] == dataset_name for dataset in datastructure_updates
+    )
+    if not dataset_in_pending_operations:
         raise datastore.DatasetNotFound(
             f'Dataset {dataset_name} not found in pending_operations.json'
         )
@@ -33,7 +37,6 @@ def remove(dataset_name: str):
         if datastructure_updates[i]['name'] == dataset_name:
             del datastructure_updates[i]
             break
-
     pending_operations["releaseTime"] = date.seconds_since_epoch()
     datastore.write_pending_operations(pending_operations)
 
@@ -72,14 +75,32 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         # dataset not found -> it needs to be ADDED first
         else:
             raise DatasetNotFound(
-                f'Dataset {dataset_name} with status RELEASED not found in data_store'
+                f'Dataset {dataset_name} with status RELEASED '
+                'not found in data_store'
             )
 
 
+def get_release_status(dataset_name: str) -> str:
+    pending_operations = datastore.get_pending_operations()
+    data_structure_updates = pending_operations["dataStructureUpdates"]
+    try:
+        return next(
+            data_structure["releaseStatus"]
+            for data_structure in data_structure_updates
+            if data_structure["name"] == dataset_name
+        )
+    except StopIteration:
+        return None
+
+
 def __check_if_transition_allowed(old_release_status, new_release_status):
-    if new_release_status not in RELEASE_STATUS_ALLOWED_TRANSITIONS[old_release_status]:
+    allowed_transitions = (
+        RELEASE_STATUS_ALLOWED_TRANSITIONS[old_release_status]
+    )
+    if new_release_status not in allowed_transitions:
         raise ReleaseStatusTransitionNotAllowed(
-            f'Transition from {old_release_status} to {new_release_status} is not allowed'
+            f'Transition from {old_release_status} to {new_release_status} '
+            'is not allowed'
         )
 
 
