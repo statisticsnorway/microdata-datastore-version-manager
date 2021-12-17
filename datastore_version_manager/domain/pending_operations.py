@@ -6,8 +6,8 @@ from datastore_version_manager.util import semver, date
 def add_new(dataset_name: str, operation: str, release_status: str,
             description: str) -> None:
     pending_operations = datastore.get_pending_operations()
-    pending_operations_list = pending_operations["dataStructureUpdates"]
-    pending_operations_list.append({
+    data_structure_updates = pending_operations["dataStructureUpdates"]
+    data_structure_updates.append({
         "name": dataset_name,
         "operation": operation,
         "description": description,
@@ -18,7 +18,9 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
     )
-    
+    pending_operations["updateType"] = semver.get_update_type(
+        data_structure_updates
+    )
     datastore.write_pending_operations(pending_operations)
 
 
@@ -33,7 +35,9 @@ def remove(dataset_name: str):
         if datastructure_updates[i]['name'] == dataset_name:
             del datastructure_updates[i]
             break
-
+    pending_operations["updateType"] = semver.get_update_type(
+        pending_operations["dataStructureUpdates"]
+    )
     pending_operations["releaseTime"] = date.seconds_since_epoch()
     datastore.write_pending_operations(pending_operations)
 
