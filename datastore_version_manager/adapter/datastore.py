@@ -37,6 +37,14 @@ def write_datastore_info(datastore_dict: dict):
         return json.dump(datastore_dict, f, indent=4)
 
 
+def write_to_archive(json_dict: dict, file_path: str):
+    file_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/archive/{file_path}'
+    )
+    with open(file_path, 'w', encoding="utf-8") as f:
+        return json.dump(json_dict, f, indent=4)
+
+
 def dataset_exists(dataset_name: str):
     return (
             os.path.isdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}') and
