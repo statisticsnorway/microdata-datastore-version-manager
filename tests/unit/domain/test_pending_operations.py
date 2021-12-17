@@ -1,7 +1,12 @@
 import pytest
+import os
 import shutil
 from datastore_version_manager.adapter import datastore
 from datastore_version_manager.domain import pending_operations
+
+
+DATASTORE_ROOT_DIR = 'tests/resources/SSB_FDB'
+ARCHIVE_DIR = f'{DATASTORE_ROOT_DIR}/archive/pending_operations'
 
 
 def setup_function():
@@ -21,7 +26,7 @@ def teardown_function():
 
 @pytest.fixture(autouse=True)
 def setup_environment(monkeypatch):
-    monkeypatch.setenv('DATASTORE_ROOT_DIR', 'tests/resources/SSB_FDB')
+    monkeypatch.setenv('DATASTORE_ROOT_DIR', DATASTORE_ROOT_DIR)
     monkeypatch.setenv('DATASET_BUILDER_OUTPUT_DIR', 'tests/resources/built_datasets')
 
 
@@ -29,6 +34,7 @@ def test_remove_dataset_from_pending_operations():
     dataset_name = 'ANOTHER_TEST_DATASET'
     pending_operations.remove(dataset_name)
     data_structure_updates = datastore.get_pending_operations()["dataStructureUpdates"]
+    os.path.exists(f'{ARCHIVE_DIR}/pending_operations__0_0_0_1.json')
     assert len(data_structure_updates) == 1
     if datastore.draft_dataset_exists(dataset_name):
         assert False
