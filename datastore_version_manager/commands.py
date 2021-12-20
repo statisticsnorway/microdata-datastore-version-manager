@@ -27,21 +27,13 @@ def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
             f'release status: {release_status}'
         )
 
-    built_data_path = built_datasets.get_data_path(dataset_name)
-    if '.parquet' in built_data_path:
-        draft_data_path = (
-            f'{datastore.get_data_dir_path(dataset_name)}/'
-            f'{dataset_name}__0_0.parquet'
-        )
-    else:
-        draft_data_path = (
-            f'{datastore.get_data_dir_path(dataset_name)}/'
-            f'{dataset_name}__0_0'
-        )
+    built_data_path, is_partitioned = built_datasets.get_data_path(dataset_name)
+    draft_data_path = datastore.create_data_file_path(
+        dataset_name, "0.0.0", is_partitioned
+    )
     built_metadata_path = built_datasets.get_metadata_path(dataset_name)
-    draft_metadata_path = (
-        f'{datastore.get_metadata_dir_path(dataset_name)}/'
-        f'{dataset_name}__0_0_0.json'
+    draft_metadata_path = datastore.create_metadata_file_path(
+        dataset_name, "0.0.0"
     )
     shutil.move(built_metadata_path, draft_metadata_path)
     shutil.move(built_data_path, draft_data_path)

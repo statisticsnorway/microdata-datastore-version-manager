@@ -18,3 +18,7 @@ def bump_version(semver: str, index: int) -> str:
     semver_list = semver.split('.')
     semver_list[index] = str(int(semver_list[index]) + 1)
     return '.'.join(semver_list)
+
+
+def dotted_to_underlined(semver: str) -> str:
+    return semver.replace('.', '_')
