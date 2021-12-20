@@ -2,7 +2,17 @@ import pytest
 import shutil
 import json
 from datastore_version_manager import commands
-from datastore_version_manager.domain.pending_operations import ReleaseStatusTransitionNotAllowed
+from datastore_version_manager.commands import ForbiddenOperation
+from datastore_version_manager.adapter.built_datasets import (
+    NoBuiltDataset
+)
+from datastore_version_manager.domain.pending_operations import (
+    ReleaseStatusTransitionNotAllowed
+)
+
+PENDING_OPERATIONS_FILE_PATH = (
+    'tests/resources/SSB_FDB/datastore/pending_operations.json'
+)
 
 
 def setup_function():
@@ -27,9 +37,10 @@ def setup_environment(monkeypatch):
 
 
 def test_update_release_status():
-    commands.set_status('TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test')
-
-    with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
+    commands.set_status(
+        'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
+    )
+    with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.2"
     assert {
@@ -46,9 +57,10 @@ def test_update_release_status_not_allowed():
 
 
 def test_update_release_status_pending_delete():
-    commands.set_status('PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet')
-
-    with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
+    commands.set_status(
+        'PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet'
+    )
+    with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.2"
     assert {
@@ -59,9 +71,9 @@ def test_update_release_status_pending_delete():
            } in pending_operations["dataStructureUpdates"]
 
 
-def test_new_draft_to_datastore():
-    commands.new_draft_to_datastore('NEW_VARIABLE', 'Første variabel', 'ADD')
-    with open('tests/resources/SSB_FDB/datastore/pending_operations.json') as f:
+def test_add_new_dataset():
+    commands.add_new_dataset('NEW_VARIABLE', 'Første variabel', 'ADD')
+    with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.2"
     assert {
@@ -70,3 +82,21 @@ def test_new_draft_to_datastore():
                "description": "Første variabel",
                "releaseStatus": "DRAFT"
            } in pending_operations["dataStructureUpdates"]
+
+
+def test_add_new_dataset_already_versioned():
+    with pytest.raises(ForbiddenOperation) as e:
+        commands.add_new_dataset(
+            'SKATT_BRUTTOINNTEKT', 'Finnes allerede', 'ADD'
+        )
+    assert (
+        "A versioned variable of the same name already exists in datastore"
+    ) in str(e.value)
+
+
+def test_add_new_dataset_not_built():
+    with pytest.raises(NoBuiltDataset) as e:
+        commands.add_new_dataset(
+            'NOT_BUILT', 'finnes ikke', 'ADD'
+        )
+    assert "No built data file for NOT_BUILT" in str(e.value)
