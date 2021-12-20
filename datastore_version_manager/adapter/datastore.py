@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-
+from datastore_version_manager.util import semver
 
 def get_pending_operations() -> dict:
     pending_operations_json = (
@@ -91,6 +91,22 @@ def get_data_dir_path(dataset_name: str) -> str:
     if not os.path.isdir(data_dir_path):
         os.mkdir(data_dir_path)
     return data_dir_path
+
+
+def create_data_file_path(dataset_name: str, version: str,
+                          partitioned: bool) -> str:
+    data_file_path = (
+        f'{get_data_dir_path(dataset_name)}/'
+        f'{dataset_name}__{semver.dotted_to_underlined(version)[:3]}'
+    )
+    return (data_file_path if partitioned else f'{data_file_path}.parquet')
+
+
+def create_metadata_file_path(dataset_name: str, version: str) -> str:
+    return (
+        f'{get_metadata_dir_path(dataset_name)}/'
+        f'{dataset_name}__{semver.dotted_to_underlined(version)}'
+    )
 
 
 def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
