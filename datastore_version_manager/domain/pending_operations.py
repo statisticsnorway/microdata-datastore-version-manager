@@ -109,9 +109,11 @@ def __check_if_transition_allowed(old_release_status, new_release_status):
 
 def __archive() -> None:
     pending_operations = datastore.get_pending_operations()
-    version = pending_operations["version"]
+    version = semver.dotted_to_underscored(
+        pending_operations["version"]
+    )
     file_path = (
-        f'pending_operations/pending_operation__{version.replace(".", "_")}'
+        f'pending_operations/pending_operation__{version}'
     )
     datastore.write_to_archive(pending_operations, file_path)
 
