@@ -27,13 +27,17 @@ def teardown_function():
 @pytest.fixture(autouse=True)
 def setup_environment(monkeypatch):
     monkeypatch.setenv('DATASTORE_ROOT_DIR', DATASTORE_ROOT_DIR)
-    monkeypatch.setenv('DATASET_BUILDER_OUTPUT_DIR', 'tests/resources/built_datasets')
+    monkeypatch.setenv(
+        'DATASET_BUILDER_OUTPUT_DIR', 'tests/resources/built_datasets'
+    )
 
 
 def test_remove_dataset_from_pending_operations():
     dataset_name = 'ANOTHER_TEST_DATASET'
     pending_operations.remove(dataset_name)
-    data_structure_updates = datastore.get_pending_operations()["dataStructureUpdates"]
+    data_structure_updates = (
+        datastore.get_pending_operations()["dataStructureUpdates"]
+    )
     os.path.exists(f'{ARCHIVE_DIR}/pending_operations__0_0_0_1.json')
     assert len(data_structure_updates) == 1
     if datastore.draft_dataset_exists(dataset_name):
@@ -43,4 +47,18 @@ def test_remove_dataset_from_pending_operations():
 def test_remove_non_existing_dataset_from_pending_operations():
     with pytest.raises(datastore.DatasetNotFound) as e:
         pending_operations.remove("DOES_NOT_EXIST")
-    assert "Dataset DOES_NOT_EXIST not found in pending_operations.json" in str(e.value)
+    assert (
+        "Dataset DOES_NOT_EXIST not found in pending_operations.json"
+     ) in str(e.value)
+
+
+def test_get_release_status():
+    dataset_name = 'ANOTHER_TEST_DATASET'
+    release_status = pending_operations.get_release_status(dataset_name)
+    assert release_status == 'DRAFT'
+
+
+def test_get_release_status_not_exist():
+    dataset_name = 'DOES_NOT_EXIST'
+    release_status = pending_operations.get_release_status(dataset_name)
+    assert release_status is None
