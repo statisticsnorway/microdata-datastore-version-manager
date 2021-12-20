@@ -97,7 +97,7 @@ def create_data_file_path(dataset_name: str, version: str,
                           partitioned: bool) -> str:
     data_file_path = (
         f'{get_data_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underlined(version)[:3]}'
+        f'{dataset_name}__{semver.dotted_to_underscored(version)[:3]}'
     )
     return (data_file_path if partitioned else f'{data_file_path}.parquet')
 
@@ -105,7 +105,7 @@ def create_data_file_path(dataset_name: str, version: str,
 def create_metadata_file_path(dataset_name: str, version: str) -> str:
     return (
         f'{get_metadata_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underlined(version)}'
+        f'{dataset_name}__{semver.dotted_to_underscored(version)}'
     )
 
 
