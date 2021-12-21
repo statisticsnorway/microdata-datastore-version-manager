@@ -20,7 +20,7 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
     )
-    pending_operations["updateType"] = semver.get_update_type(
+    pending_operations["updateType"] = __get_update_type(
         data_structure_updates
     )
     __archive()
@@ -41,7 +41,7 @@ def remove(dataset_name: str):
         if datastructure_updates[i]['name'] == dataset_name:
             del datastructure_updates[i]
             break
-    pending_operations["updateType"] = semver.get_update_type(
+    pending_operations["updateType"] = __get_update_type(
         pending_operations["dataStructureUpdates"]
     )
     pending_operations["releaseTime"] = date.seconds_since_epoch()
@@ -124,7 +124,28 @@ def __archive() -> None:
     datastore.write_to_archive(pending_operations, file_path)
 
 
+def __get_update_type(data_structure_updates: list) -> str:
+    operations = [
+        data_structure["operation"]
+        for data_structure in data_structure_updates
+    ]
+    if "CHANGE_DATA" in operations or "REMOVE" in operations:
+        return "MAJOR"
+    elif "ADD" in operations:
+        return "MINOR"
+    elif "PATCH_METADATA":
+        return "PATCH"
+    else:
+        raise RuntimeError(
+            f"Invalid operation in {operations}"
+        )
+
+
 class ReleaseStatusTransitionNotAllowed(Exception):
+    pass
+
+
+class InvalidOperation(Exception):
     pass
 
 
