@@ -74,6 +74,9 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         pending_operations["version"] = semver.bump_draft_version(
             pending_operations["version"]
         )
+        pending_operations["updateType"] = __get_update_type(
+            pending_operations["dataStructureUpdates"]
+        )
         datastore.write_pending_operations(pending_operations)
     else:
         if datastore.is_dataset_in_data_store(dataset_name, 'RELEASED'):
@@ -128,7 +131,11 @@ def __get_update_type(data_structure_updates: list) -> str:
     operations = [
         data_structure["operation"]
         for data_structure in data_structure_updates
+        if data_structure["releaseStatus"] != "DRAFT"
     ]
+    if not operations:
+        return ""
+
     if "CHANGE_DATA" in operations or "REMOVE" in operations:
         return "MAJOR"
     elif "ADD" in operations:

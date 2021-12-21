@@ -38,7 +38,7 @@ def test_remove_dataset_from_pending_operations():
 
     actual_pending_operations = datastore.get_pending_operations()
 
-    assert actual_pending_operations["updateType"] == "MINOR"
+    assert actual_pending_operations["updateType"] == ''
     assert os.path.exists(f'{ARCHIVE_DIR}/pending_operation__0_0_0_1.json')
     assert len(actual_pending_operations["dataStructureUpdates"]) == 1
     if datastore.draft_dataset_exists(dataset_name):
