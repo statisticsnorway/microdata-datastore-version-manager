@@ -1,53 +1,65 @@
 import json
 import os
 import shutil
+from datastore_version_manager.util import semver
 
 
 def get_pending_operations() -> dict:
-    with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/pending_operations.json', encoding="utf-8") as f:
+    pending_operations_json = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/pending_operations.json'
+    )
+    with open(pending_operations_json, encoding="utf-8") as f:
         return json.load(f)
 
 
 def write_pending_operations(pending_operation: dict):
-    with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/pending_operations.json', 'w', encoding="utf-8") as f:
+    pending_operations_json = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/pending_operations.json'
+    )
+    with open(pending_operations_json, 'w', encoding="utf-8") as f:
         json.dump(pending_operation, f, indent=4)
 
 
-def remove_dataset_from_pending_operations(dataset_name: str):
-    pending_operations_dict = get_pending_operations()
-    pending_operations = pending_operations_dict["dataStructureUpdates"]
-    if not any(dataset['name'] == dataset_name for dataset in pending_operations):
-        raise DatasetNotFound(
-            f'Dataset {dataset_name} not found in pending_operations.json'
-        )
-    for i in range(len(pending_operations)):
-        if pending_operations[i]['name'] == dataset_name:
-            del pending_operations[i]
-            break
-    write_pending_operations(pending_operations_dict)
-
-
 def get_datastore_info() -> dict:
-    with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json', encoding="utf-8") as f:
+    data_store_json = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json'
+    )
+    with open(data_store_json, encoding="utf-8") as f:
         return json.load(f)
 
 
 def write_datastore_info(datastore_dict: dict):
-    with open(f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json', 'w', encoding="utf-8") as f:
+    data_store_json = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json'
+    )
+    with open(data_store_json, 'w', encoding="utf-8") as f:
         return json.dump(datastore_dict, f, indent=4)
 
 
-def dataset_exists(dataset_name: str):
-    return (
-            os.path.isdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}') and
-            os.path.isdir(f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}')
+def write_to_archive(json_dict: dict, file_path: str):
+    file_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/archive/{file_path}'
     )
+    with open(file_path, 'w', encoding="utf-8") as f:
+        json.dump(json_dict, f, indent=4)
+
+
+def dataset_exists(dataset_name: str):
+    data_dir_exists = os.path.isdir(
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
+    )
+    metadata_dir_exists = os.path.isdir(
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}'
+    )
+    return data_dir_exists and metadata_dir_exists
 
 
 def draft_dataset_exists(dataset_name: str):
     pending_operations = get_pending_operations()
     datasets = pending_operations["dataStructureUpdates"]
-    dataset_list = [dataset for dataset in datasets if dataset['name'] == dataset_name]
+    dataset_list = [
+        dataset for dataset in datasets if dataset['name'] == dataset_name
+    ]
     return len(dataset_list) > 0
 
 
@@ -75,18 +87,45 @@ def new_dataset_directory(dataset_name: str) -> None:
 
 
 def get_metadata_dir_path(dataset_name: str) -> str:
-    return f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}'
+    metadata_dir_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/metadata/{dataset_name}'
+    )
+    if not os.path.isdir(metadata_dir_path):
+        os.mkdir(metadata_dir_path)
+    return metadata_dir_path
 
 
 def get_data_dir_path(dataset_name: str) -> str:
-    return f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
+    data_dir_path = f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
+    if not os.path.isdir(data_dir_path):
+        os.mkdir(data_dir_path)
+    return data_dir_path
+
+
+def create_data_file_path(dataset_name: str, version: str,
+                          partitioned: bool) -> str:
+    data_file_path = (
+        f'{get_data_dir_path(dataset_name)}/'
+        f'{dataset_name}__{semver.dotted_to_underscored(version)[:3]}'
+    )
+    return (data_file_path if partitioned else f'{data_file_path}.parquet')
+
+
+def create_metadata_file_path(dataset_name: str, version: str) -> str:
+    return (
+        f'{get_metadata_dir_path(dataset_name)}/'
+        f'{dataset_name}__{semver.dotted_to_underscored(version)}'
+    )
 
 
 def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
     data_store = get_datastore_info()
     for version in data_store["versions"]:
         for dataset in version["dataStructureUpdates"]:
-            if dataset["name"] == dataset_name and dataset["releaseStatus"] == release_status:
+            if(
+                dataset["name"] == dataset_name and
+                dataset["releaseStatus"] == release_status
+            ):
                 return True
     return False
 

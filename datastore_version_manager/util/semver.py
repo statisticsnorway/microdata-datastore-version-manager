@@ -35,3 +35,7 @@ def get_update_type(data_structure_updates: list) -> str:
         raise RuntimeError(
             f"Invalid operation in {operations}"
         )
+
+
+def dotted_to_underscored(semver: str) -> str:
+    return semver.replace('.', '_')
