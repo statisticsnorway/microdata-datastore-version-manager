@@ -20,6 +20,7 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
     )
+    __archive()
     datastore.write_pending_operations(pending_operations)
 
 
@@ -37,6 +38,7 @@ def remove(dataset_name: str):
         if datastructure_updates[i]['name'] == dataset_name:
             del datastructure_updates[i]
             break
+    __archive()
     pending_operations["releaseTime"] = date.seconds_since_epoch()
     datastore.write_pending_operations(pending_operations)
 
@@ -57,6 +59,7 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         __check_if_transition_allowed(
             dataset_on_pending_operations_list["releaseStatus"], release_status
         )
+        __archive()
         dataset_on_pending_operations_list["releaseStatus"] = release_status
         dataset_on_pending_operations_list["operation"] = operation
         dataset_on_pending_operations_list["description"] = description
@@ -102,6 +105,17 @@ def __check_if_transition_allowed(old_release_status, new_release_status):
             f'Transition from {old_release_status} to {new_release_status} '
             'is not allowed'
         )
+
+
+def __archive() -> None:
+    pending_operations = datastore.get_pending_operations()
+    version = semver.dotted_to_underscored(
+        pending_operations["version"]
+    )
+    file_path = (
+        f'pending_operations/pending_operation__{version}'
+    )
+    datastore.write_to_archive(pending_operations, file_path)
 
 
 class ReleaseStatusTransitionNotAllowed(Exception):
