@@ -136,7 +136,7 @@ def __get_update_type(data_structure_updates: list) -> str:
     elif "PATCH_METADATA":
         return "PATCH"
     else:
-        raise RuntimeError(
+        raise InvalidOperation(
             f"Invalid operation in {operations}"
         )
 
