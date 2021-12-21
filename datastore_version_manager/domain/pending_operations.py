@@ -8,8 +8,8 @@ from datastore_version_manager.adapter.constants import (
 def add_new(dataset_name: str, operation: str, release_status: str,
             description: str) -> None:
     pending_operations = datastore.get_pending_operations()
-    pending_operations_list = pending_operations["dataStructureUpdates"]
-    pending_operations_list.append({
+    data_structure_updates = pending_operations["dataStructureUpdates"]
+    data_structure_updates.append({
         "name": dataset_name,
         "operation": operation,
         "description": description,
@@ -19,6 +19,9 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations["releaseTime"] = date.seconds_since_epoch()
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
+    )
+    pending_operations["updateType"] = __get_update_type(
+        data_structure_updates
     )
     __archive()
     datastore.write_pending_operations(pending_operations)
@@ -38,8 +41,11 @@ def remove(dataset_name: str):
         if datastructure_updates[i]['name'] == dataset_name:
             del datastructure_updates[i]
             break
-    __archive()
+    pending_operations["updateType"] = __get_update_type(
+        pending_operations["dataStructureUpdates"]
+    )
     pending_operations["releaseTime"] = date.seconds_since_epoch()
+    __archive()
     datastore.write_pending_operations(pending_operations)
 
 
@@ -67,6 +73,9 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         pending_operations["releaseTime"] = date.seconds_since_epoch()
         pending_operations["version"] = semver.bump_draft_version(
             pending_operations["version"]
+        )
+        pending_operations["updateType"] = __get_update_type(
+            pending_operations["dataStructureUpdates"]
         )
         datastore.write_pending_operations(pending_operations)
     else:
@@ -113,12 +122,39 @@ def __archive() -> None:
         pending_operations["version"]
     )
     file_path = (
-        f'pending_operations/pending_operation__{version}'
+        f'pending_operations/pending_operation__{version}.json'
     )
     datastore.write_to_archive(pending_operations, file_path)
 
 
+def __get_update_type(data_structure_updates: list) -> str:
+    operations = [
+        data_structure["operation"]
+        for data_structure in data_structure_updates
+        if data_structure["releaseStatus"] in [
+            "PENDING_RELEASE", "PENDING_DELETE"
+        ]
+    ]
+    if not operations:
+        return ""
+
+    if "CHANGE_DATA" in operations or "REMOVE" in operations:
+        return "MAJOR"
+    elif "ADD" in operations:
+        return "MINOR"
+    elif "PATCH_METADATA":
+        return "PATCH"
+    else:
+        raise InvalidOperation(
+            f"Invalid operation in {operations}"
+        )
+
+
 class ReleaseStatusTransitionNotAllowed(Exception):
+    pass
+
+
+class InvalidOperation(Exception):
     pass
 
 

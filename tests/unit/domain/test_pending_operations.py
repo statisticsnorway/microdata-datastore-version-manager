@@ -35,11 +35,12 @@ def setup_environment(monkeypatch):
 def test_remove_dataset_from_pending_operations():
     dataset_name = 'ANOTHER_TEST_DATASET'
     pending_operations.remove(dataset_name)
-    data_structure_updates = (
-        datastore.get_pending_operations()["dataStructureUpdates"]
-    )
-    os.path.exists(f'{ARCHIVE_DIR}/pending_operations__0_0_0_1.json')
-    assert len(data_structure_updates) == 1
+
+    actual_pending_operations = datastore.get_pending_operations()
+
+    assert actual_pending_operations["updateType"] == ''
+    assert os.path.exists(f'{ARCHIVE_DIR}/pending_operation__0_0_0_1.json')
+    assert len(actual_pending_operations["dataStructureUpdates"]) == 1
     if datastore.draft_dataset_exists(dataset_name):
         assert False
 
@@ -49,7 +50,7 @@ def test_remove_non_existing_dataset_from_pending_operations():
         pending_operations.remove("DOES_NOT_EXIST")
     assert (
         "Dataset DOES_NOT_EXIST not found in pending_operations.json"
-     ) in str(e.value)
+    ) in str(e.value)
 
 
 def test_get_release_status():

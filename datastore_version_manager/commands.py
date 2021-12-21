@@ -27,7 +27,9 @@ def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
             f'release status: {release_status}'
         )
 
-    built_data_path, is_partitioned = built_datasets.get_data_path(dataset_name)
+    built_data_path, is_partitioned = (
+        built_datasets.get_data_path(dataset_name)
+    )
     draft_data_path = datastore.create_data_file_path(
         dataset_name, "0.0.0", is_partitioned
     )

@@ -3,6 +3,7 @@ import os
 import shutil
 from datastore_version_manager.util import semver
 
+
 def get_pending_operations() -> dict:
     pending_operations_json = (
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/pending_operations.json'
@@ -40,7 +41,7 @@ def write_to_archive(json_dict: dict, file_path: str):
         f'{os.environ["DATASTORE_ROOT_DIR"]}/archive/{file_path}'
     )
     with open(file_path, 'w', encoding="utf-8") as f:
-        return json.dump(json_dict, f, indent=4)
+        json.dump(json_dict, f, indent=4)
 
 
 def dataset_exists(dataset_name: str):

@@ -43,6 +43,7 @@ def test_update_release_status():
     with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.2"
+    assert pending_operations["updateType"] == "MINOR"
     assert {
                "name": "TEST_DATASET",
                "operation": "ADD",
@@ -63,6 +64,7 @@ def test_update_release_status_pending_delete():
     with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.2"
+    assert pending_operations["updateType"] == "MAJOR"
     assert {
                "name": "PERSON_SIVILSTAND",
                "operation": "REMOVE",
@@ -76,6 +78,7 @@ def test_add_new_dataset():
     with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
     assert pending_operations["version"] == "0.0.0.2"
+    assert pending_operations["updateType"] == ""
     assert {
                "name": "NEW_VARIABLE",
                "operation": "ADD",

@@ -1,6 +1,7 @@
 import os
 from typing import Tuple
 
+
 def get_metadata_path(dataset_name: str) -> str:
     built_dataset_dir = os.environ['BUILT_DATASETS_DIR']
     metadata_path = (
