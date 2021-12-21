@@ -131,7 +131,9 @@ def __get_update_type(data_structure_updates: list) -> str:
     operations = [
         data_structure["operation"]
         for data_structure in data_structure_updates
-        if data_structure["releaseStatus"] != "DRAFT"
+        if data_structure["releaseStatus"] in [
+            "PENDING_RELEASE", "PENDING_DELETE"
+        ]
     ]
     if not operations:
         return ""
