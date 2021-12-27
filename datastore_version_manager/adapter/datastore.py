@@ -17,7 +17,7 @@ def write_pending_operations(pending_operation: dict):
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/pending_operations.json'
     )
     with open(pending_operations_json, 'w', encoding="utf-8") as f:
-        json.dump(pending_operation, f, indent=4)
+        json.dump(pending_operation, f, indent=4, ensure_ascii=False)
 
 
 def get_datastore_info() -> dict:
@@ -33,7 +33,7 @@ def write_datastore_info(datastore_dict: dict):
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json'
     )
     with open(data_store_json, 'w', encoding="utf-8") as f:
-        return json.dump(datastore_dict, f, indent=4)
+        return json.dump(datastore_dict, f, indent=4, ensure_ascii=False)
 
 
 def write_to_archive(json_dict: dict, file_path: str):
@@ -41,7 +41,7 @@ def write_to_archive(json_dict: dict, file_path: str):
         f'{os.environ["DATASTORE_ROOT_DIR"]}/archive/{file_path}'
     )
     with open(file_path, 'w', encoding="utf-8") as f:
-        json.dump(json_dict, f, indent=4)
+        json.dump(json_dict, f, indent=4, ensure_ascii=False)
 
 
 def dataset_exists(dataset_name: str):
@@ -114,8 +114,26 @@ def create_data_file_path(dataset_name: str, version: str,
 def create_metadata_file_path(dataset_name: str, version: str) -> str:
     return (
         f'{get_metadata_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underscored(version)}'
+        f'{dataset_name}__{semver.dotted_to_underscored(version)}.json'
     )
+
+
+def get_metadata_all(version: str) -> str:
+    metadata_all_file_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
+        f'metadata_all__{semver.dotted_to_underscored(version)}.json'
+    )
+    with open(metadata_all_file_path, 'r') as f:
+        return json.load(f)
+
+
+def write_metadata_all_draft(metadata_all: dict) -> None:
+    metadata_all_draft_file_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
+        'metadata_all__draft.json'
+    )
+    with open(metadata_all_draft_file_path, 'w') as f:
+        json.dump(metadata_all, f, indent=4, ensure_ascii=False)
 
 
 def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
@@ -128,6 +146,11 @@ def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
             ):
                 return True
     return False
+
+
+def get_latest_version():
+    datastore_info = get_datastore_info()
+    return datastore_info["versions"][0]
 
 
 class DatasetNotFound(Exception):
