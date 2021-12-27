@@ -5,7 +5,6 @@ from datastore_version_manager.adapter import datastore
 
 
 DATASTORE_ROOT_DIR = 'tests/resources/SSB_FDB'
-ARCHIVE_DIR = f'{DATASTORE_ROOT_DIR}/archive/pending_operations'
 
 
 def setup_function():
