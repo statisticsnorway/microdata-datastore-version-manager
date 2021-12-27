@@ -150,7 +150,7 @@ def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
 
 def get_latest_version():
     datastore_info = get_datastore_info()
-    return datastore_info["versions"][0]
+    return datastore_info["versions"][0]["version"]
 
 
 class DatasetNotFound(Exception):

@@ -3,98 +3,98 @@
     "populationDescription": "Omfatter alle skattepliktige i løpet av inntektsåret. Inkl. personer med dnr.",
     "temporality": "ACCUMULATED",
     "temporalCoverage": {
-      "start": 8401,
-      "stop": 18261
+        "start": 8401,
+        "stop": 18261
     },
     "identifierVariables": [
-      {
-        "name": "PERSONID_1",
-        "label": "Personidentifikator",
-        "representedVariables": [
-          {
-            "description": "Identifikator for person i RAIRD",
-            "validPeriod": {
-              "start": 8401,
-              "stop": 18261
+        {
+            "name": "PERSONID_1",
+            "label": "Personidentifikator",
+            "representedVariables": [
+                {
+                    "description": "Identifikator for person i RAIRD",
+                    "validPeriod": {
+                        "start": 8401,
+                        "stop": 18261
+                    },
+                    "valueDomain": {
+                        "description": "N/A",
+                        "unitOfMeasure": "N/A"
+                    }
+                }
+            ],
+            "dataType": "Long",
+            "variableRole": "Identifier",
+            "keyType": {
+                "name": "PERSON",
+                "label": "Person",
+                "description": "Statistisk enhet er person (individ, enkeltmenenske)"
             },
-            "valueDomain": {
-              "description": "N/A",
-              "unitOfMeasure": "N/A"
-            }
-          }
-        ],
-        "dataType": "Long",
-        "variableRole": "Identifier",
-        "keyType": {
-          "name": "PERSON",
-          "label": "Person",
-          "description": "Statistisk enhet er person (individ, enkeltmenenske)"
-        },
-        "format": "RandomUInt48"
-      }
+            "format": "RandomUInt48"
+        }
     ],
     "measureVariable": {
-      "name": "NEW_VARIABLE",
-      "label": "Bruttoinntekt",
-      "representedVariables": [
-        {
-          "description": "Variabelen omfatter lønnsinntekter, næringsinntekter, pensjoner og kapitalinntekter. \n \n https://www.ssb.no/a/metadata/conceptvariable/vardok/16/nb \n \n Variabelen omfatter alle skattepliktige i løpet av inntektsåret. Inkl. personer med dnr. Observasjoner med verdiene 0 og uoppgitt (missing) er utelatt.",
-          "validPeriod": {
-            "start": 8401,
-            "stop": 18261
-          },
-          "valueDomain": {
-            "description": "NOK",
-            "unitOfMeasure": "NOK"
-          }
-        }
-      ],
-      "dataType": "Long",
-      "variableRole": "Measure"
+        "name": "NEW_VARIABLE",
+        "label": "Bruttoinntekt",
+        "representedVariables": [
+            {
+                "description": "Variabelen omfatter lønnsinntekter, næringsinntekter, pensjoner og kapitalinntekter. \n \n https://www.ssb.no/a/metadata/conceptvariable/vardok/16/nb \n \n Variabelen omfatter alle skattepliktige i løpet av inntektsåret. Inkl. personer med dnr. Observasjoner med verdiene 0 og uoppgitt (missing) er utelatt.",
+                "validPeriod": {
+                    "start": 8401,
+                    "stop": 18261
+                },
+                "valueDomain": {
+                    "description": "NOK",
+                    "unitOfMeasure": "NOK"
+                }
+            }
+        ],
+        "dataType": "Long",
+        "variableRole": "Measure"
     },
     "subjectFields": [
-      "Skatt for personer",
-      "Inntekt og forbruk"
+        "Skatt for personer",
+        "Inntekt og forbruk"
     ],
     "languageCode": "no",
     "attributeVariables": [
-      {
-        "name": "START",
-        "label": "Startdato",
-        "representedVariables": [
-          {
-            "description": "Startdato/måletidspunktet for hendelsen",
-            "validPeriod": {
-              "start": 8401,
-              "stop": 18261
-            },
-            "valueDomain": {
-              "description": "N/A",
-              "unitOfMeasure": "N/A"
-            }
-          }
-        ],
-        "dataType": "Instant",
-        "variableRole": "Start"
-      },
-      {
-        "name": "STOP",
-        "label": "Stoppdato",
-        "representedVariables": [
-          {
-            "description": "Stoppdato/sluttdato for hendelsen",
-            "validPeriod": {
-              "start": 8401,
-              "stop": 18261
-            },
-            "valueDomain": {
-              "description": "N/A",
-              "unitOfMeasure": "N/A"
-            }
-          }
-        ],
-        "dataType": "Instant",
-        "variableRole": "Stop"
-      }
+        {
+            "name": "START",
+            "label": "Startdato",
+            "representedVariables": [
+                {
+                    "description": "Startdato/måletidspunktet for hendelsen",
+                    "validPeriod": {
+                        "start": 8401,
+                        "stop": 18261
+                    },
+                    "valueDomain": {
+                        "description": "N/A",
+                        "unitOfMeasure": "N/A"
+                    }
+                }
+            ],
+            "dataType": "Instant",
+            "variableRole": "Start"
+        },
+        {
+            "name": "STOP",
+            "label": "Stoppdato",
+            "representedVariables": [
+                {
+                    "description": "Stoppdato/sluttdato for hendelsen",
+                    "validPeriod": {
+                        "start": 8401,
+                        "stop": 18261
+                    },
+                    "valueDomain": {
+                        "description": "N/A",
+                        "unitOfMeasure": "N/A"
+                    }
+                }
+            ],
+            "dataType": "Instant",
+            "variableRole": "Stop"
+        }
     ]
-  }
+}
