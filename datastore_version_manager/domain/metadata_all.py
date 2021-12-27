@@ -17,7 +17,18 @@ def generate_metadata_all_draft():
                 data_structure for data_structure in data_structures
                 if data_structure['name'] != dataset_name
             ]
+        elif data_structure_update['operation'] == 'ADD':
+            draft_metadata_file_path = datastore.create_metadata_file_path(
+                dataset_name, "0.0.0"
+            )
+            with open(draft_metadata_file_path, 'r') as f:
+                draft_metadata = json.load(f)
+            data_structures.append(draft_metadata)
         else:
+            data_structures = [
+                data_structure for data_structure in data_structures
+                if data_structure['name'] != dataset_name
+            ]
             draft_metadata_file_path = datastore.create_metadata_file_path(
                 dataset_name, "0.0.0"
             )
