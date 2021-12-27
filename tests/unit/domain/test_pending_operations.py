@@ -37,12 +37,16 @@ def test_remove_dataset_from_pending_operations():
     pending_operations.remove(dataset_name)
 
     actual_pending_operations = datastore.get_pending_operations()
+    draft_metadata_all = datastore.get_metadata_all('draft')
 
-    assert actual_pending_operations["updateType"] == ''
+    assert actual_pending_operations["updateType"] == 'MAJOR'
     assert os.path.exists(f'{ARCHIVE_DIR}/pending_operation__0_0_0_1.json')
-    assert len(actual_pending_operations["dataStructureUpdates"]) == 1
-    if datastore.draft_dataset_exists(dataset_name):
-        assert False
+    assert len(actual_pending_operations["dataStructureUpdates"]) == 2
+    assert not datastore.draft_dataset_exists(dataset_name)
+    assert not any([
+        data_structure["name"] == dataset_name
+        for data_structure in draft_metadata_all["dataStructures"]
+    ])
 
 
 def test_remove_non_existing_dataset_from_pending_operations():

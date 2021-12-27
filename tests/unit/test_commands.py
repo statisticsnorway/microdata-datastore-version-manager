@@ -2,6 +2,7 @@ import pytest
 import shutil
 import json
 from datastore_version_manager import commands
+from datastore_version_manager.adapter import datastore
 from datastore_version_manager.commands import ForbiddenOperation
 from datastore_version_manager.adapter.built_datasets import (
     NoBuiltDataset
@@ -40,10 +41,12 @@ def test_update_release_status():
     commands.set_status(
         'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
     )
+
     with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
+
     assert pending_operations["version"] == "0.0.0.2"
-    assert pending_operations["updateType"] == "MINOR"
+    assert pending_operations["updateType"] == "MAJOR"
     assert {
                "name": "TEST_DATASET",
                "operation": "ADD",
@@ -61,8 +64,11 @@ def test_update_release_status_pending_delete():
     commands.set_status(
         'PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet'
     )
+
     with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
+    draft_metadata_all = datastore.get_metadata_all('draft')
+
     assert pending_operations["version"] == "0.0.0.2"
     assert pending_operations["updateType"] == "MAJOR"
     assert {
@@ -71,20 +77,31 @@ def test_update_release_status_pending_delete():
                "description": "Fjernet",
                "releaseStatus": "PENDING_DELETE"
            } in pending_operations["dataStructureUpdates"]
+    assert not any([
+        data_structure["name"] == 'PERSON_SIVILSTAND'
+        for data_structure in draft_metadata_all["dataStructures"]
+    ])
 
 
 def test_add_new_dataset():
     commands.add_new_dataset('NEW_VARIABLE', 'Første variabel', 'ADD')
+
     with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
+    draft_metadata_all = datastore.get_metadata_all('draft')
+
     assert pending_operations["version"] == "0.0.0.2"
-    assert pending_operations["updateType"] == ""
+    assert pending_operations["updateType"] == "MAJOR"
     assert {
                "name": "NEW_VARIABLE",
                "operation": "ADD",
                "description": "Første variabel",
                "releaseStatus": "DRAFT"
            } in pending_operations["dataStructureUpdates"]
+    assert any([
+        data_structure["name"] == 'NEW_VARIABLE'
+        for data_structure in draft_metadata_all["dataStructures"]
+    ])
 
 
 def test_add_new_dataset_already_versioned():
