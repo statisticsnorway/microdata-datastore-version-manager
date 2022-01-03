@@ -1,4 +1,5 @@
 from datastore_version_manager.adapter import datastore
+from datastore_version_manager.domain import metadata_all
 from datastore_version_manager.util import semver, date
 from datastore_version_manager.adapter.constants import (
     RELEASE_STATUS_ALLOWED_TRANSITIONS
@@ -25,6 +26,7 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     )
     __archive()
     datastore.write_pending_operations(pending_operations)
+    metadata_all.generate_metadata_all_draft()
 
 
 def remove(dataset_name: str):
@@ -47,6 +49,7 @@ def remove(dataset_name: str):
     pending_operations["releaseTime"] = date.seconds_since_epoch()
     __archive()
     datastore.write_pending_operations(pending_operations)
+    metadata_all.generate_metadata_all_draft()
 
 
 def set_release_status(dataset_name: str, release_status: str, operation: str,
@@ -78,6 +81,7 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
             pending_operations["dataStructureUpdates"]
         )
         datastore.write_pending_operations(pending_operations)
+        metadata_all.generate_metadata_all_draft()
     else:
         if datastore.is_dataset_in_data_store(dataset_name, 'RELEASED'):
             __check_if_transition_allowed('RELEASED', release_status)
@@ -103,6 +107,11 @@ def get_release_status(dataset_name: str) -> str:
         )
     except StopIteration:
         return None
+
+
+def get_datastructure_updates() -> list:
+    pending_operations = datastore.get_pending_operations()
+    return pending_operations["dataStructureUpdates"]
 
 
 def __check_if_transition_allowed(old_release_status, new_release_status):

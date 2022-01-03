@@ -11,11 +11,17 @@
             "releaseStatus": "DRAFT"
         },
         {
-            "name" : "ANOTHER_TEST_DATASET",
-            "operation" : "ADD",
-            "description" : "Enda et datasett om test",
+            "name": "ANOTHER_TEST_DATASET",
+            "operation": "ADD",
+            "description": "Enda et datasett om test",
             "releaseStatus": "DRAFT"
+        },
+        {
+            "name": "SKATT_BRUTTOINNTEKT",
+            "operation": "REMOVE",
+            "description": "Fjernet dataset",
+            "releaseStatus": "PENDING_DELETE"
         }
     ],
-    "updateType": ""
+    "updateType": "MAJOR"
 }
