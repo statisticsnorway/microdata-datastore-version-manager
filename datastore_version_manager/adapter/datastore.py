@@ -69,7 +69,7 @@ def delete_draft_dataset(dataset_name: str):
     if len(os.listdir(metadata_dir)) == 0:
         shutil.rmtree(metadata_dir)
 
-    data_dir = get_data_dir_path(dataset_name)
+    data_dir = get_or_create_data_dir_path(dataset_name)
     single_parquet = f'{data_dir}/{dataset_name}__0_0.parquet'
     if os.path.exists(single_parquet):
         os.remove(single_parquet)
@@ -95,7 +95,7 @@ def get_metadata_dir_path(dataset_name: str) -> str:
     return metadata_dir_path
 
 
-def get_data_dir_path(dataset_name: str) -> str:
+def get_or_create_data_dir_path(dataset_name: str) -> str:
     data_dir_path = f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
     if not os.path.isdir(data_dir_path):
         os.mkdir(data_dir_path)
@@ -105,10 +105,10 @@ def get_data_dir_path(dataset_name: str) -> str:
 def create_data_file_path(dataset_name: str, version: str,
                           partitioned: bool) -> str:
     data_file_path = (
-        f'{get_data_dir_path(dataset_name)}/'
+        f'{get_or_create_data_dir_path(dataset_name)}/'
         f'{dataset_name}__{semver.dotted_to_underscored(version)[:3]}'
     )
-    return (data_file_path if partitioned else f'{data_file_path}.parquet')
+    return data_file_path if partitioned else f'{data_file_path}.parquet'
 
 
 def create_metadata_file_path(dataset_name: str, version: str) -> str:
@@ -119,6 +119,11 @@ def create_metadata_file_path(dataset_name: str, version: str) -> str:
 
 
 def get_metadata_all(version: str) -> str:
+    """
+    Get metadata_all__x_x_x.json
+    :param version : str
+        Either "draft" or a semantic version ("x_x_x" where x is a number)
+    """
     metadata_all_file_path = (
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
         f'metadata_all__{semver.dotted_to_underscored(version)}.json'
@@ -151,6 +156,19 @@ def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
 def get_latest_version():
     datastore_info = get_datastore_info()
     return datastore_info["versions"][0]["version"]
+
+
+def get_data_versions(version: str) -> str:
+    """
+    data_versions__x_x_x.json is generated for each version and points to the correct data file.
+    :param version:
+    """
+    data_versions_file_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
+        f'data_versions__{semver.dotted_to_underscored(version)}.json'
+    )
+    with open(data_versions_file_path, 'r') as f:
+        return json.load(f)
 
 
 class DatasetNotFound(Exception):

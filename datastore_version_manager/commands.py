@@ -54,6 +54,10 @@ def set_status(dataset_name: str, release_status: str, operation: str = None,
     )
 
 
+def bump_version(description: str):
+    return None
+
+
 def hard_delete(dataset_name: str):
     pending_operations.remove(dataset_name)
     datastore.delete_draft_dataset(dataset_name)
