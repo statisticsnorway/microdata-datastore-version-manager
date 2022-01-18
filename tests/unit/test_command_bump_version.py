@@ -31,8 +31,12 @@ def test_bump_version():
     pending_operations = datastore.get_pending_operations()
     previous_release_time = pending_operations["releaseTime"]
 
+    assert len(datastore.get_archive('pending_operations')) == 3
+
     bump_desc = "First version"
     commands.bump_version(bump_desc)
+
+    assert len(datastore.get_archive('pending_operations')) == 0
 
     # pending_operations.json file - updated
     pending_operations = datastore.get_pending_operations()
@@ -72,9 +76,11 @@ def test_bump_version():
 
     # metadata_all_draft.json file - updated
     metadata_all_draft = datastore.get_metadata_all('draft')
-    assert len(metadata_all_draft["dataStructures"]) == 1
-    assert metadata_all_draft["dataStructures"][0]["name"] == "DATASET_A"
-    assert metadata_all_draft["dataStructures"][0]["identifierVariables"]  # exists
+    assert len(metadata_all_draft["dataStructures"]) == 2
+    dataset_names = [
+        data_structure["name"] for data_structure in metadata_all_draft["dataStructures"]
+    ]
+    assert "DATASET_A" and "DATASET_B" in dataset_names
 
     # Redundant metadata file DATASET_A__0_0_0.json - change in name
     assert not os.path.exists(datastore.create_metadata_file_path("DATASET_A", "0.0.0"))
@@ -87,4 +93,4 @@ def test_bump_version():
     # data_versions__x_x_x.json - created
     data_versions = datastore.get_data_versions("1.0.0")
     assert len(data_versions) == 1
-    assert data_versions["DATASET_A"] == "DATASET_A__1_0_0.parquet"
+    assert data_versions["DATASET_A"] == "DATASET_A__1_0.parquet"

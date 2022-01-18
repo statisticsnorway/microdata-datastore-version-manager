@@ -44,6 +44,13 @@ def write_to_archive(json_dict: dict, file_path: str):
         json.dump(json_dict, f, indent=4, ensure_ascii=False)
 
 
+def get_archive(file_path: str) -> list:
+    file_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/archive/{file_path}'
+    )
+    return os.listdir(file_path)
+
+
 def dataset_exists(dataset_name: str):
     data_dir_exists = os.path.isdir(
         f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
