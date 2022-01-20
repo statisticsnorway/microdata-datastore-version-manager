@@ -1,0 +1,22 @@
+{
+  "dataStore": {
+    "name": "no.ssb.fdb",
+    "label": "Data fra SSB",
+    "description": "Registerdata som inngår i SSBs statistikkproduksjon",
+    "languageCode": "no"
+  },
+  "dataStructures": [
+    {
+      "name": "DATASET_A",
+      "identifierVariables": [],
+      "measureVariable": {},
+      "attributeVariables": []
+    },
+    {
+      "name": "DATASET_B",
+      "identifierVariables": [],
+      "measureVariable": {},
+      "attributeVariables": []
+    }
+  ]
+}

@@ -47,6 +47,9 @@ def remove(dataset_name: str):
         pending_operations["dataStructureUpdates"]
     )
     pending_operations["releaseTime"] = date.seconds_since_epoch()
+    pending_operations["version"] = semver.bump_draft_version(
+        pending_operations["version"]
+    )
     __archive()
     datastore.write_pending_operations(pending_operations)
     metadata_all.generate_metadata_all_draft()
@@ -57,21 +60,23 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
     pending_operations = datastore.get_pending_operations()
     pending_operations_list = pending_operations["dataStructureUpdates"]
     try:
-        dataset_on_pending_operations_list = next(
+        dataset = next(
             operation for operation in pending_operations_list
             if operation["name"] == dataset_name
         )
     except StopIteration:
-        dataset_on_pending_operations_list = None
+        dataset = None
 
-    if dataset_on_pending_operations_list:
+    if dataset:
         __check_if_transition_allowed(
-            dataset_on_pending_operations_list["releaseStatus"], release_status
+            dataset["releaseStatus"], release_status
         )
         __archive()
-        dataset_on_pending_operations_list["releaseStatus"] = release_status
-        dataset_on_pending_operations_list["operation"] = operation
-        dataset_on_pending_operations_list["description"] = description
+        dataset["releaseStatus"] = release_status
+        dataset["operation"] = operation
+
+        if description:
+            dataset["description"] = description
 
         pending_operations["releaseTime"] = date.seconds_since_epoch()
         pending_operations["version"] = semver.bump_draft_version(
@@ -131,7 +136,7 @@ def __archive() -> None:
         pending_operations["version"]
     )
     file_path = (
-        f'pending_operations/pending_operation__{version}.json'
+        f'pending_operations/pending_operations__{version}.json'
     )
     datastore.write_to_archive(pending_operations, file_path)
 

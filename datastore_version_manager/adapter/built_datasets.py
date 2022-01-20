@@ -15,7 +15,7 @@ def get_metadata_path(dataset_name: str) -> str:
         )
 
 
-def get_data_path(dataset_name: str) -> Tuple[str, bool]:
+def get_data_path(dataset_name: str) -> str:
     built_dataset_dir = os.environ['BUILT_DATASETS_DIR']
     partitioned_parquet_path = (
         f'{built_dataset_dir}/{dataset_name}/{dataset_name}__0_0'
@@ -23,9 +23,9 @@ def get_data_path(dataset_name: str) -> Tuple[str, bool]:
     parquet_path = f'{partitioned_parquet_path}.parquet'
 
     if os.path.exists(partitioned_parquet_path):
-        return partitioned_parquet_path, True
+        return partitioned_parquet_path
     elif os.path.exists(parquet_path):
-        return parquet_path, False
+        return parquet_path
     else:
         raise NoBuiltDataset(
             f"No built data file for {dataset_name}"

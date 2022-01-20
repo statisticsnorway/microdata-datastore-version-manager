@@ -6,7 +6,7 @@ from datastore_version_manager.adapter import (
 from datastore_version_manager.adapter.constants import (
     USER_CHANGEABLE_RELEASE_STATUSES
 )
-from datastore_version_manager.domain import pending_operations
+from datastore_version_manager.domain import pending_operations, version_bumper
 
 
 def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
@@ -27,14 +27,15 @@ def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
             f'release status: {release_status}'
         )
 
-    built_data_path, is_partitioned = (
+    built_data_path = (
         built_datasets.get_data_path(dataset_name)
     )
-    draft_data_path = datastore.create_data_file_path(
-        dataset_name, "0.0.0", is_partitioned
+    datastore.create_data_dir_path(dataset_name)
+    draft_data_path = datastore.get_data_file_path(
+        dataset_name, "0.0.0"
     )
     built_metadata_path = built_datasets.get_metadata_path(dataset_name)
-    draft_metadata_path = datastore.create_metadata_file_path(
+    draft_metadata_path = datastore.get_metadata_file_path(
         dataset_name, "0.0.0"
     )
     shutil.move(built_metadata_path, draft_metadata_path)
@@ -42,7 +43,7 @@ def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
     pending_operations.add_new(dataset_name, "ADD", "DRAFT", description)
 
 
-def set_status(dataset_name: str, release_status: str, operation: str = None,
+def set_status(dataset_name: str, release_status: str, operation: str,
                description: str = None):
     if release_status not in USER_CHANGEABLE_RELEASE_STATUSES['MUTABLE']:
         raise NoSuchReleaseStatus(
@@ -55,7 +56,7 @@ def set_status(dataset_name: str, release_status: str, operation: str = None,
 
 
 def bump_version(description: str):
-    return None
+    version_bumper.bump_version(description)
 
 
 def hard_delete(dataset_name: str):

@@ -40,7 +40,7 @@ def test_remove_dataset_from_pending_operations():
     draft_metadata_all = datastore.get_metadata_all('draft')
 
     assert actual_pending_operations["updateType"] == 'MAJOR'
-    assert os.path.exists(f'{ARCHIVE_DIR}/pending_operation__0_0_0_1.json')
+    assert os.path.exists(f'{ARCHIVE_DIR}/pending_operations__0_0_0_1.json')
     assert len(actual_pending_operations["dataStructureUpdates"]) == 2
     assert not datastore.draft_dataset_exists(dataset_name)
     assert not any([

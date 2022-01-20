@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+
 from datastore_version_manager.util import semver
 
 
@@ -51,6 +52,14 @@ def get_archive(file_path: str) -> list:
     return os.listdir(file_path)
 
 
+def remove_archived_pending_operations():
+    pending_ops_archive = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/archive/pending_operations'
+    )
+    shutil.rmtree(pending_ops_archive)
+    os.mkdir(pending_ops_archive)
+
+
 def dataset_exists(dataset_name: str):
     data_dir_exists = os.path.isdir(
         f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
@@ -76,7 +85,7 @@ def delete_draft_dataset(dataset_name: str):
     if len(os.listdir(metadata_dir)) == 0:
         shutil.rmtree(metadata_dir)
 
-    data_dir = get_or_create_data_dir_path(dataset_name)
+    data_dir = get_data_dir_path(dataset_name)
     single_parquet = f'{data_dir}/{dataset_name}__0_0.parquet'
     if os.path.exists(single_parquet):
         os.remove(single_parquet)
@@ -102,27 +111,91 @@ def get_metadata_dir_path(dataset_name: str) -> str:
     return metadata_dir_path
 
 
-def get_or_create_data_dir_path(dataset_name: str) -> str:
-    data_dir_path = f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
+def get_metadata_file_path(dataset_name: str, version: str) -> str:
+    return (
+        f'{get_metadata_dir_path(dataset_name)}/'
+        f'{dataset_name}__{semver.dotted_to_underscored(version)}.json'
+    )
+
+
+def get_metadata(dataset_name: str, version: str) -> dict:
+    metadata_json = (
+        get_metadata_file_path(
+            dataset_name, version
+        )
+    )
+    with open(metadata_json, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def change_metadata_file_name(dataset_name: str, version: str) -> None:
+    source_metadata_json = (
+        get_metadata_file_path(
+            dataset_name, "0.0.0"
+        )
+    )
+    destination_metadata_json = (
+        get_metadata_file_path(
+            dataset_name, version
+        )
+    )
+
+    if os.path.exists(destination_metadata_json):
+        raise Exception(f"{destination_metadata_json} should not exist.")
+
+    os.rename(source_metadata_json, destination_metadata_json)
+
+
+def get_data_dir_path(dataset_name: str) -> str:
+    return f'{os.environ["DATASTORE_ROOT_DIR"]}/data/{dataset_name}'
+
+
+def create_data_dir_path(dataset_name: str) -> str:
+    data_dir_path = get_data_dir_path(dataset_name)
     if not os.path.isdir(data_dir_path):
         os.mkdir(data_dir_path)
     return data_dir_path
 
 
-def create_data_file_path(dataset_name: str, version: str,
-                          partitioned: bool) -> str:
+def get_data_file_path(dataset_name: str, version: str) -> str:
     data_file_path = (
-        f'{get_or_create_data_dir_path(dataset_name)}/'
+        f'{get_data_dir_path(dataset_name)}/'
         f'{dataset_name}__{semver.dotted_to_underscored(version)[:3]}'
     )
-    return data_file_path if partitioned else f'{data_file_path}.parquet'
+    if os.path.isdir(data_file_path):
+        return data_file_path
+    else:
+        return f'{data_file_path}.parquet'
 
 
-def create_metadata_file_path(dataset_name: str, version: str) -> str:
-    return (
-        f'{get_metadata_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underscored(version)}.json'
+def is_data_file_partitioned(dataset_name: str, version: str) -> bool:
+    data_file_path = get_data_file_path(dataset_name, version)
+    if os.path.isdir(data_file_path):
+        return True
+    else:
+        return False
+
+
+def change_data_file_name(dataset_name: str, version: str) -> None:
+    source_data_parquet = (
+        get_data_file_path(
+            dataset_name, "0.0.0"
+        )
     )
+    destination_data_parquet = (
+        f'{get_data_dir_path(dataset_name)}/'
+        f'{dataset_name}__{semver.dotted_to_underscored(version)[:3]}'
+    )
+
+    if not is_data_file_partitioned(dataset_name, "0.0.0"):
+        destination_data_parquet = (
+            f'{destination_data_parquet}.parquet'
+        )
+
+    if os.path.exists(destination_data_parquet):
+        raise Exception(f"{destination_data_parquet} should not exist.")
+
+    os.rename(source_data_parquet, destination_data_parquet)
 
 
 def get_metadata_all(version: str) -> str:
@@ -139,12 +212,12 @@ def get_metadata_all(version: str) -> str:
         return json.load(f)
 
 
-def write_metadata_all_draft(metadata_all: dict) -> None:
-    metadata_all_draft_file_path = (
+def write_metadata_all(metadata_all: dict, version: str) -> None:
+    metadata_all_file_path = (
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
-        'metadata_all__draft.json'
+        f'metadata_all__{semver.dotted_to_underscored(version)}.json'
     )
-    with open(metadata_all_draft_file_path, 'w') as f:
+    with open(metadata_all_file_path, 'w') as f:
         json.dump(metadata_all, f, indent=4, ensure_ascii=False)
 
 
@@ -162,10 +235,14 @@ def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
 
 def get_latest_version():
     datastore_info = get_datastore_info()
+
+    if len(datastore_info["versions"]) == 0:
+        return "0.0.0"
+
     return datastore_info["versions"][0]["version"]
 
 
-def get_data_versions(version: str) -> str:
+def get_data_versions(version: str) -> dict:
     """
     data_versions__x_x_x.json is generated for each version and points to the correct data file.
     :param version:
@@ -176,6 +253,15 @@ def get_data_versions(version: str) -> str:
     )
     with open(data_versions_file_path, 'r') as f:
         return json.load(f)
+
+
+def write_data_versions(data_versions: dict, version: str) -> None:
+    data_versions_file_path = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
+        f'data_versions__{semver.dotted_to_underscored(version)}.json'
+    )
+    with open(data_versions_file_path, 'w') as f:
+        json.dump(data_versions, f, indent=4, ensure_ascii=False)
 
 
 class DatasetNotFound(Exception):

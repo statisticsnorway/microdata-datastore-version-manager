@@ -57,7 +57,7 @@ def test_update_release_status():
 
 def test_update_release_status_not_allowed():
     with pytest.raises(ReleaseStatusTransitionNotAllowed):
-        commands.set_status('TEST_DATASET', 'DRAFT')
+        commands.set_status('TEST_DATASET', 'DRAFT', 'ADD')
 
 
 def test_update_release_status_pending_delete():
