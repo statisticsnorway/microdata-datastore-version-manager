@@ -8,7 +8,7 @@ def bump_version(description: str):
     pending_ops = datastore.get_pending_operations()
     previous_version = datastore.get_latest_version()
 
-    bumped_data_structures, new_version = datastore_info.update_datastore_info(
+    bumped_data_structures, new_version = datastore_info.bump_datastore_info(
         description, pending_ops, release_time, previous_version
     )
 
