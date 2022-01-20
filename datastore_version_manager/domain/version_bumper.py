@@ -38,7 +38,7 @@ def __change_metadata_file_names__(bumped_data_structures: dict, new_version: st
 def __change_data_file_names__(bumped_data_structures: dict, new_version: str) -> None:
     """
     Change data file names of data structures that were RELEASED
-    from <dataset>__0_0.parquet to <dataset>__<new_version>.parquet.
+    from <dataset>__0_0(.parquet) to <dataset>__<new_version>(.parquet).
     """
     for data_structure in bumped_data_structures:
         if data_structure["releaseStatus"] == "RELEASED":
