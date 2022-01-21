@@ -52,7 +52,12 @@ def get_archive(file_path: str) -> list:
     return os.listdir(file_path)
 
 
-def remove_archived_pending_operations():
+def remove_archived_pending_operations(pre_bump_pending_operations: dict, new_version: str):
+    file_path = (
+        f'pending_operations/pending_operations__before_{semver.dotted_to_underscored(new_version)}.json'
+    )
+    write_to_archive(pre_bump_pending_operations, file_path)
+
     pending_ops_archive = (
         f'{os.environ["DATASTORE_ROOT_DIR"]}/archive/pending_operations'
     )

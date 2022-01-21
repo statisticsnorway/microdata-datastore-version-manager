@@ -7,6 +7,7 @@ def bump_version(description: str):
     release_time = date.seconds_since_epoch()
     pending_ops = datastore.get_pending_operations()
     previous_version = datastore.get_latest_version()
+    pre_bump_pending_operations = datastore.get_pending_operations()
 
     bumped_data_structures, new_version = datastore_info.bump_datastore_info(
         description, pending_ops, release_time, previous_version
@@ -22,7 +23,7 @@ def bump_version(description: str):
 
     data_versions.create_new_version(bumped_data_structures, previous_version, new_version)
 
-    datastore.remove_archived_pending_operations()
+    datastore.remove_archived_pending_operations(pre_bump_pending_operations, new_version)
 
 
 def __change_metadata_file_names__(bumped_data_structures: dict, new_version: str) -> None:
