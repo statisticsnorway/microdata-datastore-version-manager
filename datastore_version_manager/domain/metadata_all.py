@@ -51,11 +51,14 @@ def create_new_version(bumped_data_structures: dict, previous_version: str, new_
         metadata_all = datastore.get_metadata_all(previous_version)
 
         # remove DELETED datasets from the new metadata_all
-        for data_structure in bumped_data_structures:
-            if data_structure["releaseStatus"] == "DELETED":
-                for data_structure_in_all in metadata_all["dataStructures"]:
-                    if data_structure_in_all["name"] == data_structure["name"]:
-                        del data_structure_in_all
+        deleted_structures = [
+            data_structure["name"] for data_structure in bumped_data_structures
+            if data_structure["releaseStatus"] == "DELETED"
+        ]
+        metadata_all["dataStructures"] = [
+            ds for ds in metadata_all["dataStructures"]
+            if ds["name"] not in deleted_structures
+        ]
 
     for data_structure in bumped_data_structures:
         if data_structure["releaseStatus"] == "RELEASED":

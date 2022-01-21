@@ -142,33 +142,11 @@ def __archive() -> None:
 
 
 def __get_update_type(data_structure_updates: list) -> str:
-    operations = [
-        data_structure["operation"]
-        for data_structure in data_structure_updates
-        if data_structure["releaseStatus"] in [
-            "PENDING_RELEASE", "PENDING_DELETE"
-        ]
-    ]
-    if not operations:
-        return ""
-
-    if "CHANGE_DATA" in operations or "REMOVE" in operations:
-        return "MAJOR"
-    elif "ADD" in operations:
-        return "MINOR"
-    elif "PATCH_METADATA":
-        return "PATCH"
-    else:
-        raise InvalidOperation(
-            f"Invalid operation in {operations}"
-        )
+    update_type, _ = semver.calculate_new_version(data_structure_updates)
+    return update_type
 
 
 class ReleaseStatusTransitionNotAllowed(Exception):
-    pass
-
-
-class InvalidOperation(Exception):
     pass
 
 
