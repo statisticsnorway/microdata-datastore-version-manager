@@ -64,10 +64,10 @@ def test_delete_draft_dataset_partitioned_parquet():
     assert not os.path.exists(draft_metadata_path)
 
 
-def test_is_dataset_in_data_store():
-    assert datastore.is_dataset_in_data_store(
+def test_is_dataset_in_datastore_versions():
+    assert datastore.is_dataset_in_datastore_versions(
         'SKATT_BRUTTOINNTEKT', 'RELEASED'
     )
-    assert not datastore.is_dataset_in_data_store(
+    assert not datastore.is_dataset_in_datastore_versions(
         'SKATT_BRUTTOINNTEKT', 'DELETED'
     )

@@ -40,3 +40,27 @@ def test_generate_metadata_all_draft():
     assert data_structures == [
         'PERSON_SIVILSTAND', 'TEST_DATASET', 'ANOTHER_TEST_DATASET'
     ]
+
+
+def test_create_new_version():
+    data_structures = [
+        {
+            "description": "Nye data",
+            "name": "PERSON_SIVILSTAND",
+            "operation": "CHANGE_DATA",
+            "releaseStatus": "RELEASED"
+        }
+    ]
+    metadata_all.create_new_version(data_structures, "2.0.0", "3.0.0")
+
+    metadata_all_3 = datastore.get_metadata_all('3.0.0')
+    data_structures = [
+        data_structure for data_structure in metadata_all_3['dataStructures']
+        if data_structure["name"] == "PERSON_SIVILSTAND"
+    ]
+    assert data_structures[0] == {
+            "description": "Nye data",
+            "name": "PERSON_SIVILSTAND",
+            "operation": "CHANGE_DATA",
+            "releaseStatus": "RELEASED"
+        }

@@ -1,0 +1,21 @@
+{
+    "version": "0.0.0.2",
+    "description": "Draft",
+    "releaseTime": 1642412087,
+    "languageCode": "no",
+    "dataStructureUpdates": [
+        {
+            "name": "DATASET_A",
+            "description": "Dataset A",
+            "operation": "ADD",
+            "releaseStatus": "DRAFT"
+        },
+        {
+            "name": "DATASET_B",
+            "description": "Dataset B",
+            "operation": "ADD",
+            "releaseStatus": "DRAFT"
+        }
+    ],
+    "updateType": "MINOR"
+}
