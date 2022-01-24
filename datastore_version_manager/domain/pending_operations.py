@@ -88,7 +88,7 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         datastore.write_pending_operations(pending_operations)
         metadata_all.generate_metadata_all_draft()
     else:
-        if datastore.is_dataset_in_data_store(dataset_name, 'RELEASED'):
+        if datastore.is_dataset_in_datastore_versions(dataset_name, 'RELEASED'):
             _check_if_transition_allowed('RELEASED', release_status)
             add_new(
                 dataset_name, operation, release_status, description
@@ -97,7 +97,7 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         else:
             raise DatasetNotFound(
                 f'Dataset {dataset_name} with status RELEASED '
-                'not found in data_store'
+                'not found in datastore_versions'
             )
 
 

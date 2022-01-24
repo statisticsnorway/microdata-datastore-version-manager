@@ -21,19 +21,19 @@ def write_pending_operations(pending_operation: dict):
         json.dump(pending_operation, f, indent=4, ensure_ascii=False)
 
 
-def get_datastore_info() -> dict:
-    data_store_json = (
-        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json'
+def get_datastore_versions() -> dict:
+    datastore_versions_json = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/datastore_versions.json'
     )
-    with open(data_store_json, encoding="utf-8") as f:
+    with open(datastore_versions_json, encoding="utf-8") as f:
         return json.load(f)
 
 
-def write_datastore_info(datastore_dict: dict):
-    data_store_json = (
-        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/data_store.json'
+def write_datastore_versions(datastore_dict: dict):
+    datastore_versions_json = (
+        f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/datastore_versions.json'
     )
-    with open(data_store_json, 'w', encoding="utf-8") as f:
+    with open(datastore_versions_json, 'w', encoding="utf-8") as f:
         return json.dump(datastore_dict, f, indent=4, ensure_ascii=False)
 
 
@@ -226,9 +226,9 @@ def write_metadata_all(metadata_all: dict, version: str) -> None:
         json.dump(metadata_all, f, indent=4, ensure_ascii=False)
 
 
-def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
-    data_store = get_datastore_info()
-    for version in data_store["versions"]:
+def is_dataset_in_datastore_versions(dataset_name: str, release_status) -> bool:
+    datastore_versions = get_datastore_versions()
+    for version in datastore_versions["versions"]:
         for dataset in version["dataStructureUpdates"]:
             if(
                 dataset["name"] == dataset_name and
@@ -239,12 +239,12 @@ def is_dataset_in_data_store(dataset_name: str, release_status) -> bool:
 
 
 def get_latest_version():
-    datastore_info = get_datastore_info()
+    datastore_versions = get_datastore_versions()
 
-    if len(datastore_info["versions"]) == 0:
+    if len(datastore_versions["versions"]) == 0:
         return "0.0.0"
 
-    return datastore_info["versions"][0]["version"]
+    return datastore_versions["versions"][0]["version"]
 
 
 def get_data_versions(version: str) -> dict:

@@ -2,7 +2,7 @@ from datastore_version_manager.adapter import datastore
 from datastore_version_manager.util import semver
 
 
-def bump_datastore_info(description: str, pending_ops: dict, release_time: int, previous_version: str) -> tuple:
+def bump_datastore_versions(description: str, pending_ops: dict, release_time: int, previous_version: str) -> tuple:
     data_structures_to_bump = []
 
     for data_structure in pending_ops["dataStructureUpdates"]:
@@ -30,9 +30,9 @@ def bump_datastore_info(description: str, pending_ops: dict, release_time: int, 
         "dataStructureUpdates": data_structures_to_bump
     }
 
-    datastore_info = datastore.get_datastore_info()
-    datastore_info["versions"].insert(0, new_datastore_version)
-    datastore.write_datastore_info(datastore_info)
+    datastore_versions = datastore.get_datastore_versions()
+    datastore_versions["versions"].insert(0, new_datastore_version)
+    datastore.write_datastore_versions(datastore_versions)
 
     return data_structures_to_bump, new_version
 

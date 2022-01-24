@@ -1,6 +1,6 @@
 from datastore_version_manager.adapter import datastore
-from datastore_version_manager.util import date, semver
-from datastore_version_manager.domain import pending_operations, metadata_all, datastore_info, data_versions
+from datastore_version_manager.domain import pending_operations, metadata_all, data_versions, datastore_versions
+from datastore_version_manager.util import date
 
 
 def bump_version(description: str):
@@ -9,7 +9,7 @@ def bump_version(description: str):
     previous_version = datastore.get_latest_version()
     pre_bump_pending_operations = datastore.get_pending_operations()
 
-    bumped_data_structures, new_version = datastore_info.bump_datastore_info(
+    bumped_data_structures, new_version = datastore_versions.bump_datastore_versions(
         description, pending_ops, release_time, previous_version
     )
 

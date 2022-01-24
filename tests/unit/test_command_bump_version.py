@@ -36,13 +36,13 @@ def test_bump_version():
     bump_desc = "First version"
     commands.bump_version(bump_desc)
 
-    # data_store.json file - updated
-    datastore_info = datastore.get_datastore_info()
-    assert len(datastore_info["versions"]) == 1
-    assert datastore_info["versions"][0]["version"] == "0.1.0"
-    assert datastore_info["versions"][0]["description"] == bump_desc
-    assert datastore_info["versions"][0]["releaseTime"] > previous_release_time
-    assert datastore_info["versions"][0]["dataStructureUpdates"][0] == \
+    # datastore_versions.json file - updated
+    datastore_versions = datastore.get_datastore_versions()
+    assert len(datastore_versions["versions"]) == 1
+    assert datastore_versions["versions"][0]["version"] == "0.1.0"
+    assert datastore_versions["versions"][0]["description"] == bump_desc
+    assert datastore_versions["versions"][0]["releaseTime"] > previous_release_time
+    assert datastore_versions["versions"][0]["dataStructureUpdates"][0] == \
            {
                "name": "DATASET_A",
                "operation": "ADD",
@@ -124,10 +124,10 @@ def test_bump_version_twice():
     assert pending_operations["updateType"] == ""  # no datasets
     assert len(pending_operations["dataStructureUpdates"]) == 0
 
-    # data_store.json file - updated
-    datastore_info = datastore.get_datastore_info()
-    assert len(datastore_info["versions"]) == 2
-    assert datastore_info["versions"][0] == {  # newest version must be the first element on the list
+    # datastore_versions.json file - updated
+    datastore_versions = datastore.get_datastore_versions()
+    assert len(datastore_versions["versions"]) == 2
+    assert datastore_versions["versions"][0] == {  # newest version must be the first element on the list
         "version": "0.2.0",
         "description": bump_desc,
         "releaseTime": pending_operations["releaseTime"],

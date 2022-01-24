@@ -10,7 +10,7 @@ from datastore_version_manager.domain import pending_operations, version_bumper
 
 
 def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
-    if datastore.is_dataset_in_data_store(dataset_name, "RELEASED"):
+    if datastore.is_dataset_in_datastore_versions(dataset_name, "RELEASED"):
         raise ForbiddenOperation(
             f'Can not add new variable "{dataset_name}". '
             'A versioned variable of the same name already exists in datastore'
