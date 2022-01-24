@@ -21,10 +21,10 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
     )
-    pending_operations["updateType"] = __get_update_type(
+    pending_operations["updateType"] = _get_update_type(
         data_structure_updates
     )
-    __archive()
+    _archive()
     datastore.write_pending_operations(pending_operations)
     metadata_all.generate_metadata_all_draft()
 
@@ -43,14 +43,14 @@ def remove(dataset_name: str):
         if datastructure_updates[i]['name'] == dataset_name:
             del datastructure_updates[i]
             break
-    pending_operations["updateType"] = __get_update_type(
+    pending_operations["updateType"] = _get_update_type(
         pending_operations["dataStructureUpdates"]
     )
     pending_operations["releaseTime"] = date.seconds_since_epoch()
     pending_operations["version"] = semver.bump_draft_version(
         pending_operations["version"]
     )
-    __archive()
+    _archive()
     datastore.write_pending_operations(pending_operations)
     metadata_all.generate_metadata_all_draft()
 
@@ -68,10 +68,10 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         dataset = None
 
     if dataset:
-        __check_if_transition_allowed(
+        _check_if_transition_allowed(
             dataset["releaseStatus"], release_status
         )
-        __archive()
+        _archive()
         dataset["releaseStatus"] = release_status
         dataset["operation"] = operation
 
@@ -82,14 +82,14 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         pending_operations["version"] = semver.bump_draft_version(
             pending_operations["version"]
         )
-        pending_operations["updateType"] = __get_update_type(
+        pending_operations["updateType"] = _get_update_type(
             pending_operations["dataStructureUpdates"]
         )
         datastore.write_pending_operations(pending_operations)
         metadata_all.generate_metadata_all_draft()
     else:
         if datastore.is_dataset_in_data_store(dataset_name, 'RELEASED'):
-            __check_if_transition_allowed('RELEASED', release_status)
+            _check_if_transition_allowed('RELEASED', release_status)
             add_new(
                 dataset_name, operation, release_status, description
             )
@@ -119,7 +119,7 @@ def get_datastructure_updates() -> list:
     return pending_operations["dataStructureUpdates"]
 
 
-def __check_if_transition_allowed(old_release_status, new_release_status):
+def _check_if_transition_allowed(old_release_status, new_release_status):
     allowed_transitions = (
         RELEASE_STATUS_ALLOWED_TRANSITIONS[old_release_status]
     )
@@ -130,7 +130,7 @@ def __check_if_transition_allowed(old_release_status, new_release_status):
         )
 
 
-def __archive() -> None:
+def _archive() -> None:
     pending_operations = datastore.get_pending_operations()
     version = semver.dotted_to_underscored(
         pending_operations["version"]
@@ -141,7 +141,7 @@ def __archive() -> None:
     datastore.write_to_archive(pending_operations, file_path)
 
 
-def __get_update_type(data_structure_updates: list) -> str:
+def _get_update_type(data_structure_updates: list) -> str:
     update_type, _ = semver.calculate_new_version(data_structure_updates)
     return update_type
 
