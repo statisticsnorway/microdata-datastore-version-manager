@@ -1,0 +1,81 @@
+{
+    "schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "jobId": {"type": "string"},
+        "command": {
+            "type": "string",
+            "enum": ["ADD_DATASET", "BUMP_VERSION", "HARD_DELETE", "SET_STATUS"]
+        }
+    },
+    "required": ["jobId", "command", "parameters"],
+    "allOf": [
+        {
+            "if": {
+                "properties": {"command": {"const": "ADD_DATASET"}}
+            },
+            "then": {
+                "properties": {
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "datasetName": {"type": "string"}
+                        },
+                        "required": ["datasetName"]
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {"command": {"const": "HARD_DELETE"}}
+            },
+            "then": {
+                "properties": {
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "datasetName": {"type": "string"}
+                        },
+                        "required": ["datasetName"]
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {"command": {"const": "BUMP_VERSION"}}
+            },
+            "then": {
+                "properties": {
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "description": {"type": "string"}
+                        },
+                        "required": ["description"]
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {"command": {"const": "SET_STATUS"}}
+            },
+            "then": {
+                "properties": {
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "datasetName": {"type": "string"},
+                            "operation": {"type": "string"},
+                            "releaseStatus": {"type": "string"},
+                            "description": {"type": "string"}
+                        },
+                        "required": ["datasetName", "operation", "releaseStatus", "description"]
+                    }
+                }
+            }
+        }
+    ]
+}
