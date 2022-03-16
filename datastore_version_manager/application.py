@@ -5,25 +5,20 @@ import json
 import pika
 import logging
 from datastore_version_manager import commands
+from datastore_version_manager.config import config
 from jsonschema import validate
 
 # TODO: fix json logging for elastic
 logging.basicConfig(level="INFO")
 logger = logging.getLogger()
-
-RABBIT_MQ_USER = os.environ["RABBIT_MQ_USER"]
-RABBIT_MQ_PASSWORD = os.environ["RABBIT_MQ_PASSWORD"]
-RABBIT_MQ_HOST = os.environ["RABBIT_MQ_HOST"]
-RABBIT_MQ_PORT = 5672
-CONSUMER_QUEUE = os.environ["CONSUMER_QUEUE"]
-JSON_SCHEMA_FILE = "datastore_version_manager/message_schema.json"
+CONFIG = config.get_config()
 
 
 def handle_message(channel, method, properties, body):
     logger.info(f'Handling message: {body}')
     body = json.loads(body)
     try:
-        with open(JSON_SCHEMA_FILE, mode="r") as f:
+        with open(CONFIG["JSON_SCHEMA_FILE"], mode="r") as f:
             schema = json.load(f)
         validate(instance=body, schema=schema)
     except Exception as e:
@@ -52,6 +47,12 @@ def handle_message(channel, method, properties, body):
 
 
 def consume_messages():
+    RABBIT_MQ_USER = CONFIG["RABBIT_MQ_USER"]
+    RABBIT_MQ_PASSWORD = CONFIG["RABBIT_MQ_PASSWORD"]
+    RABBIT_MQ_HOST = CONFIG["RABBIT_MQ_HOST"]
+    RABBIT_MQ_PORT = CONFIG["RABBIT_MQ_PORT"]
+    CONSUMER_QUEUE = CONFIG["CONSUMER_QUEUE"]
+
     credentials = pika.PlainCredentials(RABBIT_MQ_USER, RABBIT_MQ_PASSWORD)
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
