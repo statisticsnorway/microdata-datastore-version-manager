@@ -9,7 +9,7 @@ def get_config() -> dict:
             "RABBIT_MQ_HOST": os.environ["RABBIT_MQ_HOST"],
             "RABBIT_MQ_PORT": os.environ["RABBIT_MQ_PORT"],
             "CONSUMER_QUEUE": os.environ["CONSUMER_QUEUE"],
-            "JSON_SCHEMA_FILE ": (
+            "JSON_SCHEMA_FILE": (
                 "datastore_version_manager/message_schema.json"
             )
         }

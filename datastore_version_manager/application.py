@@ -1,5 +1,3 @@
-
-import os
 import sys
 import json
 import pika
@@ -18,7 +16,7 @@ def handle_message(channel, method, properties, body):
     logger.info(f'Handling message: {body}')
     body = json.loads(body)
     try:
-        with open(CONFIG["JSON_SCHEMA_FILE"], mode="r") as f:
+        with open(CONFIG["JSON_SCHEMA_FILE"], "r") as f:
             schema = json.load(f)
         validate(instance=body, schema=schema)
     except Exception as e:
@@ -47,26 +45,25 @@ def handle_message(channel, method, properties, body):
 
 
 def consume_messages():
-    RABBIT_MQ_USER = CONFIG["RABBIT_MQ_USER"]
-    RABBIT_MQ_PASSWORD = CONFIG["RABBIT_MQ_PASSWORD"]
-    RABBIT_MQ_HOST = CONFIG["RABBIT_MQ_HOST"]
-    RABBIT_MQ_PORT = CONFIG["RABBIT_MQ_PORT"]
-    CONSUMER_QUEUE = CONFIG["CONSUMER_QUEUE"]
-
-    credentials = pika.PlainCredentials(RABBIT_MQ_USER, RABBIT_MQ_PASSWORD)
+    credentials = pika.PlainCredentials(
+        CONFIG["RABBIT_MQ_USER"], CONFIG["RABBIT_MQ_PASSWORD"]
+    )
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            RABBIT_MQ_HOST, RABBIT_MQ_PORT, '/', credentials
+            CONFIG["RABBIT_MQ_HOST"],
+            CONFIG["RABBIT_MQ_PORT"],
+            '/', credentials
         )
     )
+    consumer_queue = CONFIG["CONSUMER_QUEUE"]
     channel = connection.channel()
-    channel.queue_declare(CONSUMER_QUEUE)
+    channel.queue_declare(consumer_queue)
     channel.basic_consume(
-        queue=CONSUMER_QUEUE,
+        queue=consumer_queue,
         auto_ack=True,
         on_message_callback=handle_message
     )
-    logger.info(f"Started to consume from '{CONSUMER_QUEUE}'")
+    logger.info(f"Started to consume from '{consumer_queue}'")
     channel.start_consuming()
 
 
