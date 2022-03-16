@@ -24,7 +24,8 @@ def dotted_to_underscored(semver: str) -> str:
     return semver.replace('.', '_')
 
 
-def calculate_new_version(data_structure_updates: list, previous_version: str = None) -> tuple[str, str]:
+def calculate_new_version(data_structure_updates: list,
+                          previous_version: str = None) -> tuple[str, str]:
     operations = [
         data_structure["operation"]
         for data_structure in data_structure_updates
@@ -37,11 +38,20 @@ def calculate_new_version(data_structure_updates: list, previous_version: str = 
         return "", ""
 
     if "CHANGE_DATA" in operations or "REMOVE" in operations:
-        return "MAJOR", bump_major_version(previous_version) if previous_version is not None else ""
+        return (
+            "MAJOR", bump_major_version(previous_version)
+            if previous_version is not None else ""
+        )
     elif "ADD" in operations:
-        return "MINOR", bump_minor_version(previous_version) if previous_version is not None else ""
+        return (
+            "MINOR", bump_minor_version(previous_version)
+            if previous_version is not None else ""
+        )
     elif "PATCH_METADATA" in operations:
-        return "PATCH", bump_patch_version(previous_version) if previous_version is not None else ""
+        return (
+            "PATCH", bump_patch_version(previous_version)
+            if previous_version is not None else ""
+        )
     else:
         raise InvalidOperation(
             f"Invalid operation in {operations}"

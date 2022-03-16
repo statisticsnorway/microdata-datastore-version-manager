@@ -1,5 +1,4 @@
 import os
-from typing import Tuple
 
 
 def get_metadata_path(dataset_name: str) -> str:

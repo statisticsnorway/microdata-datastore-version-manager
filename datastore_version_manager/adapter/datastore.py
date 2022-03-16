@@ -52,9 +52,11 @@ def get_archive(file_path: str) -> list:
     return os.listdir(file_path)
 
 
-def remove_archived_pending_operations(pre_bump_pending_operations: dict, new_version: str):
+def remove_archived_pending_operations(pre_bump_pending_operations: dict,
+                                       new_version: str):
     file_path = (
-        f'pending_operations/pending_operations__before_{semver.dotted_to_underscored(new_version)}.json'
+        'pending_operations/pending_operations__before_'
+        f'{semver.dotted_to_underscored(new_version)}.json'
     )
     write_to_archive(pre_bump_pending_operations, file_path)
 
@@ -226,7 +228,8 @@ def write_metadata_all(metadata_all: dict, version: str) -> None:
         json.dump(metadata_all, f, indent=4, ensure_ascii=False)
 
 
-def is_dataset_in_datastore_versions(dataset_name: str, release_status) -> bool:
+def is_dataset_in_datastore_versions(dataset_name: str,
+                                     release_status: str) -> bool:
     datastore_versions = get_datastore_versions()
     for version in datastore_versions["versions"]:
         for dataset in version["dataStructureUpdates"]:
@@ -249,7 +252,8 @@ def get_latest_version():
 
 def get_data_versions(version: str) -> dict:
     """
-    data_versions__x_x_x.json is generated for each version and points to the correct data file.
+    data_versions__x_x_x.json is generated for each version and points
+    to the correct data file.
     :param version:
     """
     data_versions_file_path = (
