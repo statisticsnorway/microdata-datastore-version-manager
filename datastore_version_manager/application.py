@@ -20,7 +20,7 @@ def handle_message(channel, method, properties, body):
             schema = json.load(f)
         validate(instance=body, schema=schema)
     except Exception as e:
-        logger.error(f"{e}")
+        logger.error(f"{e.message}")
         return
 
     # job_id = body['jobId'] use this for logging
