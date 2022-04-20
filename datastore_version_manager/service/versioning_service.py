@@ -7,6 +7,9 @@ from datastore_version_manager.adapter.constants import (
     USER_CHANGEABLE_RELEASE_STATUSES
 )
 from datastore_version_manager.domain import pending_operations, version_bumper
+from datastore_version_manager.exceptions.exceptions import (
+    ForbiddenOperation, NoSuchReleaseStatus
+)
 
 
 def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
@@ -62,11 +65,3 @@ def bump_version(description: str):
 def hard_delete(dataset_name: str):
     pending_operations.remove(dataset_name)
     datastore.delete_draft_dataset(dataset_name)
-
-
-class NoSuchReleaseStatus(Exception):
-    pass
-
-
-class ForbiddenOperation(Exception):
-    pass

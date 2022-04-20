@@ -1,9 +1,10 @@
 import pytest
 import shutil
 import json
-from datastore_version_manager import commands
+
+from datastore_version_manager.service import versioning_service
 from datastore_version_manager.adapter import datastore
-from datastore_version_manager.commands import ForbiddenOperation
+from datastore_version_manager.exceptions.exceptions import ForbiddenOperation
 from datastore_version_manager.adapter.built_datasets import (
     NoBuiltDataset
 )
@@ -38,7 +39,7 @@ def setup_environment(monkeypatch):
 
 
 def test_update_release_status():
-    commands.set_status(
+    versioning_service.set_status(
         'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
     )
 
@@ -57,11 +58,11 @@ def test_update_release_status():
 
 def test_update_release_status_not_allowed():
     with pytest.raises(ReleaseStatusTransitionNotAllowed):
-        commands.set_status('TEST_DATASET', 'DRAFT', 'ADD')
+        versioning_service.set_status('TEST_DATASET', 'DRAFT', 'ADD')
 
 
 def test_update_release_status_pending_delete():
-    commands.set_status(
+    versioning_service.set_status(
         'PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet'
     )
 
@@ -84,7 +85,9 @@ def test_update_release_status_pending_delete():
 
 
 def test_add_new_dataset():
-    commands.add_new_dataset('NEW_VARIABLE', 'Første variabel', 'ADD')
+    versioning_service.add_new_dataset(
+        'NEW_VARIABLE', 'Første variabel', 'ADD'
+    )
 
     with open(PENDING_OPERATIONS_FILE_PATH) as f:
         pending_operations = json.load(f)
@@ -106,7 +109,7 @@ def test_add_new_dataset():
 
 def test_add_new_dataset_already_versioned():
     with pytest.raises(ForbiddenOperation) as e:
-        commands.add_new_dataset(
+        versioning_service.add_new_dataset(
             'SKATT_BRUTTOINNTEKT', 'Finnes allerede', 'ADD'
         )
     assert (
@@ -116,7 +119,7 @@ def test_add_new_dataset_already_versioned():
 
 def test_add_new_dataset_not_built():
     with pytest.raises(NoBuiltDataset) as e:
-        commands.add_new_dataset(
+        versioning_service.add_new_dataset(
             'NOT_BUILT', 'finnes ikke', 'ADD'
         )
     assert "No built data file for NOT_BUILT" in str(e.value)
