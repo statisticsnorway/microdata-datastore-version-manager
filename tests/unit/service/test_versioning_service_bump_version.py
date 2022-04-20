@@ -3,7 +3,7 @@ import shutil
 
 import pytest
 
-from datastore_version_manager import commands
+from datastore_version_manager.service import versioning_service
 from datastore_version_manager.adapter import datastore
 
 
@@ -34,7 +34,7 @@ def test_bump_version():
     assert len(datastore.get_archive('pending_operations')) > 0
 
     bump_desc = "First version"
-    commands.bump_version(bump_desc)
+    versioning_service.bump_version(bump_desc)
 
     # datastore_versions.json file - updated
     datastore_versions = datastore.get_datastore_versions()
@@ -100,9 +100,9 @@ def test_bump_version():
 
 def test_bump_version_twice():
     bump_desc = "First version"
-    commands.bump_version(bump_desc)
+    versioning_service.bump_version(bump_desc)
 
-    commands.set_status("DATASET_B", "PENDING_RELEASE", "ADD")
+    versioning_service.set_status("DATASET_B", "PENDING_RELEASE", "ADD")
 
     assert len(datastore.get_archive('pending_operations')) == 1
 
@@ -116,7 +116,7 @@ def test_bump_version_twice():
     }
 
     bump_desc = "Second version"
-    commands.bump_version(bump_desc)
+    versioning_service.bump_version(bump_desc)
 
     # pending_operations.json file - updated
     pending_operations = datastore.get_pending_operations()
@@ -127,7 +127,8 @@ def test_bump_version_twice():
     # datastore_versions.json file - updated
     datastore_versions = datastore.get_datastore_versions()
     assert len(datastore_versions["versions"]) == 2
-    assert datastore_versions["versions"][0] == {  # newest version must be the first element on the list
+    # newest version must be the first element on the list
+    assert datastore_versions["versions"][0] == {
         "version": "0.2.0",
         "description": bump_desc,
         "releaseTime": pending_operations["releaseTime"],

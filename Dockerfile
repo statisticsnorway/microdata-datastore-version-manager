@@ -45,6 +45,7 @@ FROM python:3.9-slim-bullseye
 
 WORKDIR /app
 COPY datastore_version_manager datastore_version_manager
+COPY --from=builder /app/pyproject.toml pyproject.toml
 COPY --from=builder /app/requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
@@ -52,7 +53,5 @@ RUN pip install -r requirements.txt
 #the output is sent straight to terminal without being first buffered
 ENV PYTHONUNBUFFERED 1
 
-ENV PYTHONPATH "/app/datastore_version_manager/:$PYTHONPATH"
-
-ENTRYPOINT [ "python", "datastore_version_manager/commands.py" ]
+CMD [ "gunicorn", "datastore_version_manager.app:app", "--bind", "0.0.0.0:8000", "--workers", "1", "--timeout", "20"]
 

@@ -38,6 +38,7 @@ def generate_metadata_all_draft():
 def create_new_version(bumped_data_structures: dict, previous_version: str, new_version: str) -> None:
     if previous_version == "0.0.0":
         # no previous metadata_all__x_x_x.json
+        # TODO: make this more generic
         metadata_all = {
             "dataStore": {
                 "name": "no.ssb.fdb",

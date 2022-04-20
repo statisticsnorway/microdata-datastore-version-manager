@@ -33,22 +33,28 @@ def _change_metadata_file_names(bumped_data_structures: dict, new_version: str) 
     """
     for data_structure in bumped_data_structures:
         if data_structure["releaseStatus"] == "RELEASED":
-            datastore.change_metadata_file_name(data_structure["name"], new_version)
+            datastore.change_metadata_file_name(
+                data_structure["name"], new_version
+            )
 
 
-def _change_data_file_names(bumped_data_structures: dict, new_version: str) -> None:
+def _change_data_file_names(bumped_data_structures: dict,
+                            new_version: str) -> None:
     """
     Change data file names of data structures that were RELEASED
     from <dataset>__0_0(.parquet) to <dataset>__<new_version>(.parquet).
     """
     for data_structure in bumped_data_structures:
         if data_structure["releaseStatus"] == "RELEASED":
-            datastore.change_data_file_name(data_structure["name"], new_version)
+            datastore.change_data_file_name(
+                data_structure["name"], new_version
+            )
 
 
 def _update_pending_operations(pending_ops):
     """
-     Remove data structures that were bumped. It will also update metadata_all_draft as the two need to be in sync.
+     Remove data structures that were bumped. It will also update
+     metadata_all_draft as the two need to be in sync.
     """
     for data_structure in pending_ops["dataStructureUpdates"]:
         if data_structure["releaseStatus"] in ["PENDING_RELEASE", "PENDING_DELETE"]:
