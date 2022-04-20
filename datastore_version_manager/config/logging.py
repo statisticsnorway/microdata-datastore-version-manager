@@ -14,7 +14,7 @@ def _get_project_meta():
 
 
 pkg_meta = _get_project_meta()
-service_name = "job-service"
+service_name = "datastore-version-manager"
 host = platform.node()
 command = json.dumps(sys.argv)
 
