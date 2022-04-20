@@ -45,6 +45,7 @@ FROM python:3.9-slim-bullseye
 
 WORKDIR /app
 COPY datastore_version_manager datastore_version_manager
+COPY --from=builder /app/pyproject.toml pyproject.toml
 COPY --from=builder /app/requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
