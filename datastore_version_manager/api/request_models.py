@@ -8,7 +8,6 @@ class NewPendingOperationRequest(BaseModel, extra=Extra.forbid):
 
 
 class UpdatePendingOperationRequest(BaseModel, extra=Extra.forbid):
-    datasetName: str
     releaseStatus: str
 
 

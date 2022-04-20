@@ -32,12 +32,6 @@ def teardown_function():
     )
 
 
-@pytest.fixture(autouse=True)
-def setup_environment(monkeypatch):
-    monkeypatch.setenv('DATASTORE_ROOT_DIR', 'tests/resources/SSB_FDB')
-    monkeypatch.setenv('BUILT_DATASETS_DIR', 'tests/resources/built_datasets')
-
-
 def test_update_release_status():
     versioning_service.set_status(
         'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
