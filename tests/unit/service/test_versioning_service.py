@@ -78,8 +78,8 @@ def test_update_release_status_pending_delete():
     ])
 
 
-def test_add_new_dataset():
-    versioning_service.add_new_dataset(
+def test_add_new_draft_dataset():
+    versioning_service.add_new_draft_dataset(
         'NEW_VARIABLE', 'Første variabel', 'ADD'
     )
 
@@ -101,9 +101,9 @@ def test_add_new_dataset():
     ])
 
 
-def test_add_new_dataset_already_versioned():
+def test_add_new_draft_dataset_already_versioned():
     with pytest.raises(ForbiddenOperation) as e:
-        versioning_service.add_new_dataset(
+        versioning_service.add_new_draft_dataset(
             'SKATT_BRUTTOINNTEKT', 'Finnes allerede', 'ADD'
         )
     assert (
@@ -111,9 +111,9 @@ def test_add_new_dataset_already_versioned():
     ) in str(e.value)
 
 
-def test_add_new_dataset_not_built():
+def test_add_new_draft_dataset_not_built():
     with pytest.raises(NoBuiltDataset) as e:
-        versioning_service.add_new_dataset(
+        versioning_service.add_new_draft_dataset(
             'NOT_BUILT', 'finnes ikke', 'ADD'
         )
     assert "No built data file for NOT_BUILT" in str(e.value)

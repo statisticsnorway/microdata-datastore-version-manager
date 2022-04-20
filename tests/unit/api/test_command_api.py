@@ -29,7 +29,7 @@ def test_get_pending_operations(flask_app, mocker):
 
 def test_post_pending_operations_add_data(flask_app, mocker):
     spy = mocker.patch.object(
-        versioning_service, 'add_new_dataset', return_value=None
+        versioning_service, 'add_new_draft_dataset', return_value=None
     )
     response = flask_app.post(
         url_for('command_api.add_pending_operation'),

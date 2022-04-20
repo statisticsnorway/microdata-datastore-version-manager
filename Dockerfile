@@ -53,5 +53,5 @@ RUN pip install -r requirements.txt
 #the output is sent straight to terminal without being first buffered
 ENV PYTHONUNBUFFERED 1
 
-CMD [ "gunicorn", "datastore_version_manager.app:app", "--bind", "0.0.0.0:8000", "--workers", "1"]
+CMD [ "gunicorn", "datastore_version_manager.app:app", "--bind", "0.0.0.0:8000", "--workers", "1", "--timeout", "20"]
 

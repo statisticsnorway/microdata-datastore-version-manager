@@ -12,7 +12,8 @@ from datastore_version_manager.exceptions.exceptions import (
 )
 
 
-def add_new_dataset(dataset_name: str, description: str, overwrite: bool):
+def add_new_draft_dataset(dataset_name: str, description: str,
+                          overwrite: bool) -> None:
     if datastore.is_dataset_in_datastore_versions(dataset_name, "RELEASED"):
         raise ForbiddenOperation(
             f'Can not add new variable "{dataset_name}". '

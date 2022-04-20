@@ -30,12 +30,11 @@ def get_pending_operations():
 @validate()
 def add_pending_operation(body: NewPendingOperationRequest):
     logger.info(f'POST /pending-operations with body {body}')
-    print(f'POST /pending-operations with body {body}')
     operation_type = body.operationType
     if operation_type == 'ADD_DATA':
         dataset_name = body.datasetName
         description = body.description
-        versioning_service.add_new_dataset(dataset_name, description, False)
+        versioning_service.add_new_draft_dataset(dataset_name, description, False)
         return {"message": "OK"}
     elif operation_type == 'CHANGE_DATA':
         # TODO: implement this case in versioning_service
