@@ -73,7 +73,6 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         )
         _archive()
         dataset["releaseStatus"] = release_status
-        dataset["operation"] = operation
 
         if description:
             dataset["description"] = description
