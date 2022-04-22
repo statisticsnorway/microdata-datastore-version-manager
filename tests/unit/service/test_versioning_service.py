@@ -33,7 +33,7 @@ def teardown_function():
 
 
 def test_update_release_status():
-    draft_dataset_service.set_status(
+    draft_dataset_service.update_pending_operation(
         'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
     )
 
@@ -52,11 +52,11 @@ def test_update_release_status():
 
 def test_update_release_status_not_allowed():
     with pytest.raises(ReleaseStatusTransitionNotAllowed):
-        draft_dataset_service.set_status('TEST_DATASET', 'DRAFT', 'ADD')
+        draft_dataset_service.update_pending_operation('TEST_DATASET', 'DRAFT', 'ADD')
 
 
 def test_update_release_status_pending_delete():
-    draft_dataset_service.set_status(
+    draft_dataset_service.update_pending_operation(
         'PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet'
     )
 

@@ -103,7 +103,7 @@ def test_bump_version_twice():
     bump_desc = "First version"
     version_bumper.bump_version(bump_desc)
 
-    draft_dataset_service.set_status("DATASET_B", "PENDING_RELEASE", "ADD")
+    draft_dataset_service.update_pending_operation("DATASET_B", "PENDING_RELEASE", "ADD")
 
     assert len(datastore.get_archive('pending_operations')) == 1
 

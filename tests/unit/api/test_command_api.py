@@ -12,9 +12,13 @@ MOCKED_DATASTRUCTURE_UPDATES = [
 ]
 
 ADD_REQUEST = {
-    'operationType': 'ADD',
-    'datasetName': 'MOCK_DATASET',
+    'operation_type': 'ADD',
+    'dataset_name': 'MOCK_DATASET',
     'description': 'my mocked dataset'
+}
+
+UPDATE_REQUEST = {
+    'release_status': 'PENDING_RELEASE'
 }
 
 
@@ -36,8 +40,8 @@ def test_post_pending_operations_add(flask_app, mocker):
         json=ADD_REQUEST
     )
     spy.assert_called_with(
-        ADD_REQUEST['operationType'],
-        ADD_REQUEST['datasetName'],
+        ADD_REQUEST['operation_type'],
+        ADD_REQUEST['dataset_name'],
         ADD_REQUEST['description'],
         False
     )
@@ -53,8 +57,21 @@ def test_post_pending_operations_pending_delete():
     ...
 
 
-def test_update_pending_operation():
-    ...
+def test_update_pending_operation(flask_app, mocker):
+    spy = mocker.patch.object(
+        draft_dataset_service, 'update_pending_operation', return_value=None
+    )
+    response = flask_app.put(
+        url_for('command_api.update_pending_operation', dataset_name="MOCK_DATASET"),
+        json=UPDATE_REQUEST
+    )
+    spy.assert_called_with(
+        'MOCK_DATASET',
+        UPDATE_REQUEST['release_status'],
+        None
+    )
+    assert response.status_code == 200
+    assert response.json == {'message': 'OK'}
 
 
 def test_update_pending_operation_forbidden():

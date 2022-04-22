@@ -35,3 +35,8 @@ app.register_blueprint(command_api)
 def handle_not_found(e):
     log.exception(e)
     return {'message': f'BAD REQUEST: {str(e)}'}, 400
+
+
+# this is needed to run the application in IDE
+if __name__ == "__main__":
+    app.run(port=8000, host="0.0.0.0")

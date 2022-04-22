@@ -6,7 +6,7 @@ from datastore_version_manager.adapter import (
 from datastore_version_manager.adapter.constants import (
     USER_CHANGEABLE_RELEASE_STATUSES
 )
-from datastore_version_manager.domain import pending_operations, version_bumper
+from datastore_version_manager.domain import pending_operations
 from datastore_version_manager.exceptions.exceptions import (
     ForbiddenOperation, NoSuchReleaseStatus
 )
@@ -50,14 +50,14 @@ def add_new_draft_dataset(operation_type: str,
     pending_operations.add_new(dataset_name, operation_type, "DRAFT", description)
 
 
-def set_status(dataset_name: str, release_status: str, operation: str,
-               description: str = None):
+def update_pending_operation(dataset_name: str, release_status: str, operation: str,
+                             description: str = None):
     if release_status not in USER_CHANGEABLE_RELEASE_STATUSES['MUTABLE']:
         raise NoSuchReleaseStatus(
             f'release status must be one of '
             f'{USER_CHANGEABLE_RELEASE_STATUSES["MUTABLE"]}'
         )
-    pending_operations.set_release_status(
+    pending_operations.update_pending_operation(
         dataset_name, release_status, operation, description
     )
 
