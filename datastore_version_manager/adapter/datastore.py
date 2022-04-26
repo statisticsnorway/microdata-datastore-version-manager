@@ -227,6 +227,10 @@ def write_metadata_all(metadata_all: dict, version: str) -> None:
 
 
 def is_dataset_in_datastore_versions(dataset_name: str, release_status) -> bool:
+    """
+    Determines if dataset has existed in the datastore.
+    :return: This function returns True also in case dataset was RELEASED and then DELETED.
+    """
     datastore_versions = get_datastore_versions()
     for version in datastore_versions["versions"]:
         for dataset in version["dataStructureUpdates"]:
