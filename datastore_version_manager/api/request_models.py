@@ -4,18 +4,18 @@ from pydantic import BaseModel, Extra
 
 
 class NewPendingOperationRequest(BaseModel, extra=Extra.forbid):
-    operation_type: str
-    dataset_name: str
+    operationType: str
+    datasetName: str
     description: str
 
 
 class UpdatePendingOperationRequest(BaseModel, extra=Extra.forbid):
-    release_status: str
-    operation_type: Optional[str]
+    releaseStatus: str
+    operationType: Optional[str]
 
 
 class RemovePendingOperationRequest(BaseModel, extra=Extra.forbid):
-    dataset_name: str
+    datasetName: str
 
 
 class ApplyBumpManifestoRequest(BaseModel, extra=Extra.forbid):

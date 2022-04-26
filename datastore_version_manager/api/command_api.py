@@ -30,14 +30,14 @@ def get_pending_operations():
 @validate()
 def add_pending_operation(body: NewPendingOperationRequest):
     logger.info(f'POST /pending-operations with body {body}')
-    operation_type = body.operation_type
+    operation_type = body.operationType
     if operation_type == 'ADD':
-        dataset_name = body.dataset_name
+        dataset_name = body.datasetName
         description = body.description
         draft_dataset_service.add_new_draft_dataset(operation_type, dataset_name, description, False)
         return {"message": "OK"}
     elif operation_type == 'CHANGE_DATA':
-        dataset_name = body.dataset_name
+        dataset_name = body.datasetName
         description = body.description
         draft_dataset_service.add_new_draft_dataset(operation_type, dataset_name, description, True)
         return {"message": "OK"}
@@ -59,8 +59,8 @@ def delete_pending_operation(body: RemovePendingOperationRequest):
 @validate()
 def update_pending_operation(dataset_name, body: UpdatePendingOperationRequest):
     logger.info(f'PUT /pending-operations/{dataset_name} with body {body}')
-    release_status = body.release_status
-    operation_type = body.operation_type
+    release_status = body.releaseStatus
+    operation_type = body.operationType
     draft_dataset_service.update_pending_operation(dataset_name, release_status, operation_type)
     return {"message": "OK"}
 

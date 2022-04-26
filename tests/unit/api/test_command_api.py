@@ -12,13 +12,13 @@ MOCKED_DATASTRUCTURE_UPDATES = [
 ]
 
 ADD_REQUEST = {
-    'operation_type': 'ADD',
-    'dataset_name': 'MOCK_DATASET',
+    'operationType': 'ADD',
+    'datasetName': 'MOCK_DATASET',
     'description': 'my mocked dataset'
 }
 
 UPDATE_REQUEST = {
-    'release_status': 'PENDING_RELEASE'
+    'releaseStatus': 'PENDING_RELEASE'
 }
 
 
@@ -40,8 +40,8 @@ def test_post_pending_operations_add(flask_app, mocker):
         json=ADD_REQUEST
     )
     spy.assert_called_with(
-        ADD_REQUEST['operation_type'],
-        ADD_REQUEST['dataset_name'],
+        ADD_REQUEST['operationType'],
+        ADD_REQUEST['datasetName'],
         ADD_REQUEST['description'],
         False
     )
@@ -67,7 +67,7 @@ def test_update_pending_operation(flask_app, mocker):
     )
     spy.assert_called_with(
         'MOCK_DATASET',
-        UPDATE_REQUEST['release_status'],
+        UPDATE_REQUEST['releaseStatus'],
         None
     )
     assert response.status_code == 200
