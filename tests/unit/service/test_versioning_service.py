@@ -2,8 +2,8 @@ import pytest
 import shutil
 import json
 
-from datastore_version_manager.service import draft_dataset_service
 from datastore_version_manager.adapter import datastore
+from datastore_version_manager.domain import draft_dataset
 from datastore_version_manager.exceptions.exceptions import ForbiddenOperation
 from datastore_version_manager.adapter.built_datasets import (
     NoBuiltDataset
@@ -33,7 +33,7 @@ def teardown_function():
 
 
 def test_update_release_status():
-    draft_dataset_service.update_pending_operation(
+    draft_dataset.update_pending_operation(
         'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
     )
 
@@ -52,11 +52,11 @@ def test_update_release_status():
 
 def test_update_release_status_not_allowed():
     with pytest.raises(ReleaseStatusTransitionNotAllowed):
-        draft_dataset_service.update_pending_operation('TEST_DATASET', 'DRAFT', 'ADD')
+        draft_dataset.update_pending_operation('TEST_DATASET', 'DRAFT', 'ADD')
 
 
 def test_update_release_status_pending_delete():
-    draft_dataset_service.update_pending_operation(
+    draft_dataset.update_pending_operation(
         'PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet'
     )
 
@@ -79,7 +79,7 @@ def test_update_release_status_pending_delete():
 
 
 def test_add_new_draft_dataset():
-    draft_dataset_service.add_new_draft_dataset(
+    draft_dataset.add_new_draft_dataset(
         'ADD', 'NEW_VARIABLE', 'Første variabel', False
     )
 
@@ -102,7 +102,7 @@ def test_add_new_draft_dataset():
 
 
 def test_add_new_draft_dataset_change_data():
-    draft_dataset_service.add_new_draft_dataset(
+    draft_dataset.add_new_draft_dataset(
         'CHANGE_DATA', 'TEST_DATASET', 'Nye årganger', True
     )
 
@@ -126,7 +126,7 @@ def test_add_new_draft_dataset_change_data():
 
 def test_add_new_draft_dataset_already_versioned():
     with pytest.raises(ForbiddenOperation) as e:
-        draft_dataset_service.add_new_draft_dataset(
+        draft_dataset.add_new_draft_dataset(
             'ADD', 'SKATT_BRUTTOINNTEKT', 'Finnes allerede', False
         )
     assert (
@@ -136,7 +136,7 @@ def test_add_new_draft_dataset_already_versioned():
 
 def test_add_new_draft_dataset_not_built():
     with pytest.raises(NoBuiltDataset) as e:
-        draft_dataset_service.add_new_draft_dataset(
+        draft_dataset.add_new_draft_dataset(
             'ADD', 'NOT_BUILT', 'finnes ikke', False
         )
     assert "No built data file for NOT_BUILT" in str(e.value)

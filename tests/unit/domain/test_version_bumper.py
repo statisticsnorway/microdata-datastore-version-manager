@@ -3,9 +3,8 @@ import shutil
 
 import pytest
 
-from datastore_version_manager.domain import version_bumper
+from datastore_version_manager.domain import version_bumper, draft_dataset
 from datastore_version_manager.adapter import datastore
-from datastore_version_manager.service import draft_dataset_service
 
 
 def setup_function():
@@ -103,7 +102,7 @@ def test_bump_version_twice():
     bump_desc = "First version"
     version_bumper.bump_version(bump_desc)
 
-    draft_dataset_service.update_pending_operation("DATASET_B", "PENDING_RELEASE", "ADD")
+    draft_dataset.update_pending_operation("DATASET_B", "PENDING_RELEASE", "ADD")
 
     assert len(datastore.get_archive('pending_operations')) == 1
 
