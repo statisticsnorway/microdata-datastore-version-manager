@@ -10,18 +10,20 @@ def bump_patch_version(semver: str) -> str:
     return bump_version(semver, 2)
 
 
-def bump_draft_version(semver: str) -> str:
-    return bump_version(semver, 3)
-
-
 def bump_version(semver: str, index: int) -> str:
+    if semver == 'DRAFT':
+        semver = '0.0.0.0'
+
     semver_list = semver.split('.')
     semver_list[index] = str(int(semver_list[index]) + 1)
+
     return '.'.join(semver_list)
 
 
-def dotted_to_underscored(semver: str) -> str:
-    return semver.replace('.', '_')
+def dotted_to_underscored(semver: str, parts: int = 4) -> str:
+    if semver == 'DRAFT':
+        return semver
+    return semver.replace('.', '_')[:parts*2-1]
 
 
 def calculate_new_version(data_structure_updates: list, previous_version: str = None) -> tuple[str, str]:

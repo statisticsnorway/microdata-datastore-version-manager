@@ -39,11 +39,11 @@ def add_new_draft_dataset(operation_type: str,
     )
     datastore.create_data_dir_path(dataset_name)
     draft_data_path = datastore.get_data_file_path(
-        dataset_name, "0.0.0"
+        dataset_name, "DRAFT"
     )
     built_metadata_path = built_datasets.get_metadata_path(dataset_name)
     draft_metadata_path = datastore.get_metadata_file_path(
-        dataset_name, "0.0.0"
+        dataset_name, "DRAFT"
     )
     shutil.move(built_metadata_path, draft_metadata_path)
     shutil.move(built_data_path, draft_data_path)

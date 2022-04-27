@@ -38,11 +38,11 @@ def test_delete_draft_dataset_single_parquet():
     dataset_name = 'TEST_DATASET'
     draft_data_path = (
         f'{DATASTORE_ROOT_DIR}/data/{dataset_name}/'
-        f'{dataset_name}__0_0.parquet'
+        f'{dataset_name}__DRAFT.parquet'
     )
     draft_metadata_path = (
         f'{DATASTORE_ROOT_DIR}/metadata/{dataset_name}/'
-        f'{dataset_name}__0_0_0.json'
+        f'{dataset_name}__DRAFT.json'
     )
     datastore.delete_draft_dataset(dataset_name)
     assert not os.path.exists(draft_data_path)
@@ -53,11 +53,11 @@ def test_delete_draft_dataset_partitioned_parquet():
     dataset_name = 'TEST_DATASET_PARTITIONED'
     draft_data_path = (
         f'{DATASTORE_ROOT_DIR}/data/{dataset_name}/'
-        f'{dataset_name}__0_0'
+        f'{dataset_name}__DRAFT'
     )
     draft_metadata_path = (
         f'{DATASTORE_ROOT_DIR}/metadata/{dataset_name}/'
-        f'{dataset_name}__0_0_0.json'
+        f'{dataset_name}__DRAFT.json'
     )
     datastore.delete_draft_dataset(dataset_name)
     assert not os.path.exists(draft_data_path)

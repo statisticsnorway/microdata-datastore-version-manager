@@ -1,14 +1,14 @@
 {
-    "version": "0.0.0.2",
+    "version": "0.0.0.1642412088",
     "description": "Draft",
-    "releaseTime": 1642412087,
+    "releaseTime": 1642412088,
     "languageCode": "no",
     "dataStructureUpdates": [
         {
             "name": "DATASET_A",
             "description": "Dataset A",
             "operation": "ADD",
-            "releaseStatus": "DRAFT"
+            "releaseStatus": "PENDING_RELEASE"
         },
         {
             "name": "DATASET_B",

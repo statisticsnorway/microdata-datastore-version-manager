@@ -2,8 +2,8 @@ from datastore_version_manager.adapter import datastore
 
 
 def create_new_version(bumped_data_structures: dict, previous_version: str, new_version: str) -> None:
-    if previous_version == "0.0.0":
-        # no previous data_versions__x_x_x.json
+    if previous_version == "DRAFT":
+        # no previous data_versions__x_x_x_x.json
         data_versions = {}
     else:
         data_versions = datastore.get_data_versions(previous_version)

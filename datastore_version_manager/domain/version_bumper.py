@@ -17,36 +17,36 @@ def bump_version(description: str):
 
     _update_pending_operations(pending_ops)
 
-    _change_metadata_file_names(bumped_data_structures, new_version)
+    _change_draft_metadata_file_names(bumped_data_structures, new_version)
 
-    _change_data_file_names(bumped_data_structures, new_version)
+    _change_draft_data_file_names(bumped_data_structures, new_version)
 
     data_versions.create_new_version(bumped_data_structures, previous_version, new_version)
 
     datastore.remove_archived_pending_operations(pre_bump_pending_operations, new_version)
 
 
-def _change_metadata_file_names(bumped_data_structures: dict, new_version: str) -> None:
+def _change_draft_metadata_file_names(bumped_data_structures: dict, new_version: str) -> None:
     """
     Change metadata file names of data structures that were RELEASED
-    from <dataset>__0_0_0.json to <dataset>__<new_version>.json.
+    from <dataset>__DRAFT.json to <dataset>__<new_version>.json.
     """
     for data_structure in bumped_data_structures:
         if data_structure["releaseStatus"] == "RELEASED":
-            datastore.change_metadata_file_name(
+            datastore.change_draft_metadata_file_name(
                 data_structure["name"], new_version
             )
 
 
-def _change_data_file_names(bumped_data_structures: dict,
-                            new_version: str) -> None:
+def _change_draft_data_file_names(bumped_data_structures: dict,
+                                  new_version: str) -> None:
     """
     Change data file names of data structures that were RELEASED
-    from <dataset>__0_0(.parquet) to <dataset>__<new_version>(.parquet).
+    from <dataset>__DRAFT(.parquet) to <dataset>__<new_version>(.parquet).
     """
     for data_structure in bumped_data_structures:
         if data_structure["releaseStatus"] == "RELEASED":
-            datastore.change_data_file_name(
+            datastore.change_draft_data_file_name(
                 data_structure["name"], new_version
             )
 

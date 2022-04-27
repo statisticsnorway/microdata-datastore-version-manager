@@ -86,16 +86,16 @@ def draft_dataset_exists(dataset_name: str):
 
 def delete_draft_dataset(dataset_name: str):
     metadata_dir = get_metadata_dir_path(dataset_name)
-    os.remove(f'{metadata_dir}/{dataset_name}__0_0_0.json')
+    os.remove(f'{metadata_dir}/{dataset_name}__DRAFT.json')
     if len(os.listdir(metadata_dir)) == 0:
         shutil.rmtree(metadata_dir)
 
     data_dir = get_data_dir_path(dataset_name)
-    single_parquet = f'{data_dir}/{dataset_name}__0_0.parquet'
+    single_parquet = f'{data_dir}/{dataset_name}__DRAFT.parquet'
     if os.path.exists(single_parquet):
         os.remove(single_parquet)
     else:
-        partitioned_parquet = f'{data_dir}/{dataset_name}__0_0'
+        partitioned_parquet = f'{data_dir}/{dataset_name}__DRAFT'
         shutil.rmtree(partitioned_parquet)
 
     if len(os.listdir(data_dir)) == 0:
@@ -133,10 +133,10 @@ def get_metadata(dataset_name: str, version: str) -> dict:
         return json.load(f)
 
 
-def change_metadata_file_name(dataset_name: str, version: str) -> None:
+def change_draft_metadata_file_name(dataset_name: str, version: str) -> None:
     source_metadata_json = (
         get_metadata_file_path(
-            dataset_name, "0.0.0"
+            dataset_name, "DRAFT"
         )
     )
     destination_metadata_json = (
@@ -165,7 +165,7 @@ def create_data_dir_path(dataset_name: str) -> str:
 def get_data_file_path(dataset_name: str, version: str) -> str:
     data_file_path = (
         f'{get_data_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underscored(version)[:3]}'
+        f'{dataset_name}__{semver.dotted_to_underscored(version, 2)}'
     )
     if os.path.isdir(data_file_path):
         return data_file_path
@@ -181,18 +181,18 @@ def is_data_file_partitioned(dataset_name: str, version: str) -> bool:
         return False
 
 
-def change_data_file_name(dataset_name: str, version: str) -> None:
+def change_draft_data_file_name(dataset_name: str, version: str) -> None:
     source_data_parquet = (
         get_data_file_path(
-            dataset_name, "0.0.0"
+            dataset_name, "DRAFT"
         )
     )
     destination_data_parquet = (
         f'{get_data_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underscored(version)[:3]}'
+        f'{dataset_name}__{semver.dotted_to_underscored(version, 2)}'
     )
 
-    if not is_data_file_partitioned(dataset_name, "0.0.0"):
+    if not is_data_file_partitioned(dataset_name, "DRAFT"):
         destination_data_parquet = (
             f'{destination_data_parquet}.parquet'
         )
@@ -205,9 +205,9 @@ def change_data_file_name(dataset_name: str, version: str) -> None:
 
 def get_metadata_all(version: str) -> str:
     """
-    Get metadata_all__x_x_x.json
+    Get metadata_all__x_x_x_x.json
     :param version : str
-        Either "draft" or a semantic version ("x_x_x" where x is a number)
+        Either "DRAFT" or a semantic version ("x_x_x_x" where x is a number)
     """
     metadata_all_file_path = (
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
@@ -242,14 +242,14 @@ def get_latest_version():
     datastore_versions = get_datastore_versions()
 
     if len(datastore_versions["versions"]) == 0:
-        return "0.0.0"
+        return "DRAFT"
 
     return datastore_versions["versions"][0]["version"]
 
 
 def get_data_versions(version: str) -> dict:
     """
-    data_versions__x_x_x.json is generated for each version and points to the correct data file.
+    data_versions__x_x_x_x.json is generated for each version and points to the correct data file.
     :param version:
     """
     data_versions_file_path = (
