@@ -78,7 +78,7 @@ def test_update_release_status_pending_delete():
 
 def test_add_new_draft_dataset():
     draft_dataset.add_new_draft_dataset(
-        'ADD', 'NEW_VARIABLE', 'Første variabel', False
+        'ADD_OR_CHANGE_DATA', 'NEW_VARIABLE', 'Første variabel'
     )
 
     pending_operations = read_pending_operations_from_file()
@@ -100,7 +100,7 @@ def test_add_new_draft_dataset():
 
 def test_add_new_draft_dataset_change_data():
     draft_dataset.add_new_draft_dataset(
-        'CHANGE_DATA', 'TEST_DATASET', 'Nye årganger', True
+        'ADD_OR_CHANGE_DATA', 'PERSON_SIVILSTAND', 'Nye årganger'
     )
 
     pending_operations = read_pending_operations_from_file()
@@ -109,13 +109,13 @@ def test_add_new_draft_dataset_change_data():
     assert pending_operations["version"] == f"0.0.0.{pending_operations['releaseTime']}"
     assert pending_operations["updateType"] == "MAJOR"
     assert {
-               "name": "TEST_DATASET",
+               "name": "PERSON_SIVILSTAND",
                "operation": "CHANGE_DATA",
                "description": "Nye årganger",
                "releaseStatus": "DRAFT"
            } in pending_operations["dataStructureUpdates"]
     assert any([
-        data_structure["name"] == 'TEST_DATASET'
+        data_structure["name"] == 'PERSON_SIVILSTAND'
         for data_structure in draft_metadata_all["dataStructures"]
     ])
 
@@ -123,17 +123,27 @@ def test_add_new_draft_dataset_change_data():
 def test_add_new_draft_dataset_already_versioned():
     with pytest.raises(ForbiddenOperation) as e:
         draft_dataset.add_new_draft_dataset(
-            'ADD', 'SKATT_BRUTTOINNTEKT', 'Finnes allerede', False
+            'ADD_OR_CHANGE_DATA', 'SKATT_BRUTTOINNTEKT', 'Finnes allerede'
         )
     assert (
-        "A versioned variable of the same name already exists in datastore"
+        "It exists in the draft version of datastore"
+    ) in str(e.value)
+
+
+def test_add_new_draft_dataset_deleted_in_datastore():
+    with pytest.raises(ForbiddenOperation) as e:
+        draft_dataset.add_new_draft_dataset(
+            'ADD_OR_CHANGE_DATA', 'DELETED_DATASET', 'Nye data'
+        )
+    assert (
+        "This variable has been removed from datastore"
     ) in str(e.value)
 
 
 def test_add_new_draft_dataset_not_built():
     with pytest.raises(NoBuiltDataset) as e:
         draft_dataset.add_new_draft_dataset(
-            'ADD', 'NOT_BUILT', 'finnes ikke', False
+            'ADD_OR_CHANGE_DATA', 'NOT_BUILT', 'finnes ikke'
         )
     assert "No built data file for NOT_BUILT" in str(e.value)
 

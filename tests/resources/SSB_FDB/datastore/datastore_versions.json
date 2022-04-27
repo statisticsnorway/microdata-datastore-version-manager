@@ -20,6 +20,12 @@
           "name": "SKATT_BRUTTOINNTEKT",
           "operation": "CHANGE_DATA",
           "releaseStatus": "RELEASED"
+        },
+        {
+          "description": "Deleted",
+          "name": "DELETED_DATASET",
+          "operation": "REMOVE",
+          "releaseStatus": "DELETED"
         }
       ]
     },

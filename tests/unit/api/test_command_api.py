@@ -11,7 +11,7 @@ MOCKED_DATASTRUCTURE_UPDATES = [
 ]
 
 ADD_REQUEST = {
-    'operationType': 'ADD',
+    'operationType': 'ADD_OR_CHANGE_DATA',
     'datasetName': 'MOCK_DATASET',
     'description': 'my mocked dataset'
 }
@@ -41,8 +41,7 @@ def test_post_pending_operations_add(flask_app, mocker):
     spy.assert_called_with(
         ADD_REQUEST['operationType'],
         ADD_REQUEST['datasetName'],
-        ADD_REQUEST['description'],
-        False
+        ADD_REQUEST['description']
     )
     assert response.status_code == 200
     assert response.json == {'message': 'OK'}
