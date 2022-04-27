@@ -3,8 +3,7 @@ import logging
 from flask import Blueprint, jsonify
 from flask_pydantic import validate
 
-from datastore_version_manager.service import versioning_service
-from datastore_version_manager.domain import pending_operations
+from datastore_version_manager.domain import pending_operations, draft_dataset
 from datastore_version_manager.exceptions.exceptions import (
     ForbiddenOperation
 )
@@ -31,16 +30,18 @@ def get_pending_operations():
 def add_pending_operation(body: NewPendingOperationRequest):
     logger.info(f'POST /pending-operations with body {body}')
     operation_type = body.operationType
-    if operation_type == 'ADD_DATA':
+    if operation_type == 'ADD':
         dataset_name = body.datasetName
         description = body.description
-        versioning_service.add_new_draft_dataset(dataset_name, description, False)
+        draft_dataset.add_new_draft_dataset(operation_type, dataset_name, description, False)
         return {"message": "OK"}
     elif operation_type == 'CHANGE_DATA':
-        # TODO: implement this case in versioning_service
-        return {"message": "Not implemented"}, 500
+        dataset_name = body.datasetName
+        description = body.description
+        draft_dataset.add_new_draft_dataset(operation_type, dataset_name, description, True)
+        return {"message": "OK"}
     elif operation_type == 'PENDING_DELETE':
-        # TODO: implement this case in versioning_service
+        # TODO: implement this case in draft_dataset
         return {"message": "Not implemented"}, 500
     else:
         raise ForbiddenOperation(f"Forbidden operation: {operation_type}")
@@ -49,26 +50,29 @@ def add_pending_operation(body: NewPendingOperationRequest):
 @command_api.route('/pending-operations/<dataset_name>', methods=['DELETE'])
 @validate()
 def delete_pending_operation(body: RemovePendingOperationRequest):
-    # TODO: implement this case in versioning_service
+    # TODO: implement this case in draft_dataset
     return {"message": "Not implemented"}, 500
 
 
 @command_api.route('/pending-operations/<dataset_name>', methods=['PUT'])
 @validate()
-def set_status(body: UpdatePendingOperationRequest):
-    # TODO: implement this case in versioning_service
-    return {"message": "Not implemented"}, 500
+def update_pending_operation(dataset_name, body: UpdatePendingOperationRequest):
+    logger.info(f'PUT /pending-operations/{dataset_name} with body {body}')
+    release_status = body.releaseStatus
+    operation_type = body.operationType
+    draft_dataset.update_pending_operation(dataset_name, release_status, operation_type)
+    return {"message": "OK"}
 
 
 @command_api.route('/datastore/bump', methods=['GET'])
 @validate()
 def get_bump_manifesto():
-    # TODO: implement this case in versioning_service
+    # TODO: implement this case in version_bumper
     return {"message": "Not implemented"}, 500
 
 
 @command_api.route('/datastore/bump', methods=['POST'])
 @validate()
 def apply_bump_manifesto(body: ApplyBumpManifestoRequest):
-    # TODO: implement this case in versioning_service
+    # TODO: implement this case in version_bumper
     return {"message": "Not implemented"}, 500

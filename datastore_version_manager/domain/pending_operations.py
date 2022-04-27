@@ -55,8 +55,8 @@ def remove(dataset_name: str):
     metadata_all.generate_metadata_all_draft()
 
 
-def set_release_status(dataset_name: str, release_status: str, operation: str,
-                       description: str = None) -> None:
+def update_pending_operation(dataset_name: str, release_status: str, operation: str,
+                             description: str = None) -> None:
     pending_operations = datastore.get_pending_operations()
     pending_operations_list = pending_operations["dataStructureUpdates"]
     try:
@@ -73,7 +73,6 @@ def set_release_status(dataset_name: str, release_status: str, operation: str,
         )
         _archive()
         dataset["releaseStatus"] = release_status
-        dataset["operation"] = operation
 
         if description:
             dataset["description"] = description
