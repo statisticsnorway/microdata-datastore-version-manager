@@ -165,7 +165,7 @@ def create_data_dir_path(dataset_name: str) -> str:
 def get_data_file_path(dataset_name: str, version: str) -> str:
     data_file_path = (
         f'{get_data_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underscored(version, 3)}'
+        f'{dataset_name}__{semver.dotted_to_underscored(version, 2)}'
     )
     if os.path.isdir(data_file_path):
         return data_file_path
@@ -189,7 +189,7 @@ def change_draft_data_file_name(dataset_name: str, version: str) -> None:
     )
     destination_data_parquet = (
         f'{get_data_dir_path(dataset_name)}/'
-        f'{dataset_name}__{semver.dotted_to_underscored(version, 3)}'
+        f'{dataset_name}__{semver.dotted_to_underscored(version, 2)}'
     )
 
     if not is_data_file_partitioned(dataset_name, "DRAFT"):
@@ -211,7 +211,7 @@ def get_metadata_all(version: str) -> str:
     """
     metadata_all_file_path = (
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
-        f'metadata_all__{semver.dotted_to_underscored(version, 7)}.json'
+        f'metadata_all__{semver.dotted_to_underscored(version)}.json'
     )
     with open(metadata_all_file_path, 'r') as f:
         return json.load(f)
@@ -254,7 +254,7 @@ def get_data_versions(version: str) -> dict:
     """
     data_versions_file_path = (
         f'{os.environ["DATASTORE_ROOT_DIR"]}/datastore/'
-        f'data_versions__{semver.dotted_to_underscored(version, 7)}.json'
+        f'data_versions__{semver.dotted_to_underscored(version)}.json'
     )
     with open(data_versions_file_path, 'r') as f:
         return json.load(f)

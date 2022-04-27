@@ -20,16 +20,10 @@ def bump_version(semver: str, index: int) -> str:
     return '.'.join(semver_list)
 
 
-def dotted_to_underscored(semver: str, slicing_index: int = None) -> str:
+def dotted_to_underscored(semver: str, parts: int = 4) -> str:
     if semver == 'DRAFT':
         return semver
-
-    replaced = semver.replace('.', '_')
-
-    if slicing_index:
-        replaced = replaced[:slicing_index]
-
-    return replaced
+    return semver.replace('.', '_')[:parts*2-1]
 
 
 def calculate_new_version(data_structure_updates: list, previous_version: str = None) -> tuple[str, str]:
