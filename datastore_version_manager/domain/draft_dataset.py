@@ -13,22 +13,26 @@ from datastore_version_manager.exceptions.exceptions import (
 
 
 def add_new_draft_dataset(operation_type: str,
-                          dataset_name: str, description: str,
-                          overwrite: bool) -> None:
-    if operation_type == 'ADD':
-        if datastore.is_dataset_in_datastore_versions(dataset_name, "RELEASED"):
+                          dataset_name: str, description: str) -> None:
+    if operation_type == 'ADD_OR_CHANGE_DATA':
+        if datastore.is_dataset_in_datastore_versions(dataset_name, "DELETED"):
             raise ForbiddenOperation(
-                f'Can not add new variable "{dataset_name}". '
-                'A versioned variable of the same name already exists in datastore'
+                f'Cannot add or update variable "{dataset_name}". '
+                'This variable has been removed from datastore'
             )
+
+        if datastore.is_dataset_in_datastore_versions(dataset_name, "RELEASED"):
+            operation_type = 'CHANGE_DATA'
+        else:
+            operation_type = 'ADD'
 
     release_status = pending_operations.get_release_status(dataset_name)
 
-    if release_status == 'DRAFT' and overwrite:
+    if release_status == 'DRAFT':
         datastore.delete_draft_dataset(dataset_name)
     elif release_status is not None:
         raise ForbiddenOperation(
-            f'Can not add new variable "{dataset_name}" '
+            f'Cannot add or update variable "{dataset_name}" '
             'It exists in the draft version of datastore with '
             f'release status: {release_status} '
             f'Please use hard delete first'

@@ -30,17 +30,15 @@ def get_pending_operations():
 def add_pending_operation(body: NewPendingOperationRequest):
     logger.info(f'POST /pending-operations with body {body}')
     operation_type = body.operationType
-    if operation_type == 'ADD':
+    if operation_type == 'ADD_OR_CHANGE_DATA':
         dataset_name = body.datasetName
         description = body.description
-        draft_dataset.add_new_draft_dataset(operation_type, dataset_name, description, False)
+        draft_dataset.add_new_draft_dataset(operation_type, dataset_name, description)
         return {"message": "OK"}
-    elif operation_type == 'CHANGE_DATA':
-        dataset_name = body.datasetName
-        description = body.description
-        draft_dataset.add_new_draft_dataset(operation_type, dataset_name, description, True)
-        return {"message": "OK"}
-    elif operation_type == 'PENDING_DELETE':
+    elif operation_type == 'PATCH_METADATA':
+        # TODO: implement this case in draft_dataset
+        return {"message": "Not implemented"}, 500
+    elif operation_type == 'REMOVE':
         # TODO: implement this case in draft_dataset
         return {"message": "Not implemented"}, 500
     else:
