@@ -37,10 +37,9 @@ def test_update_release_status():
         'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
     )
 
-    with open(PENDING_OPERATIONS_FILE_PATH) as f:
-        pending_operations = json.load(f)
+    pending_operations = read_pending_operations_from_file()
 
-    assert pending_operations["version"] == "0.0.0.2"
+    assert pending_operations["version"] == f"0.0.0.{pending_operations['releaseTime']}"
     assert pending_operations["updateType"] == "MAJOR"
     assert {
                "name": "TEST_DATASET",
@@ -60,11 +59,10 @@ def test_update_release_status_pending_delete():
         'PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet'
     )
 
-    with open(PENDING_OPERATIONS_FILE_PATH) as f:
-        pending_operations = json.load(f)
-    draft_metadata_all = datastore.get_metadata_all('draft')
+    pending_operations = read_pending_operations_from_file()
+    draft_metadata_all = datastore.get_metadata_all('DRAFT')
 
-    assert pending_operations["version"] == "0.0.0.2"
+    assert pending_operations["version"] == f"0.0.0.{pending_operations['releaseTime']}"
     assert pending_operations["updateType"] == "MAJOR"
     assert {
                "name": "PERSON_SIVILSTAND",
@@ -83,11 +81,10 @@ def test_add_new_draft_dataset():
         'ADD', 'NEW_VARIABLE', 'Første variabel', False
     )
 
-    with open(PENDING_OPERATIONS_FILE_PATH) as f:
-        pending_operations = json.load(f)
-    draft_metadata_all = datastore.get_metadata_all('draft')
+    pending_operations = read_pending_operations_from_file()
+    draft_metadata_all = datastore.get_metadata_all('DRAFT')
 
-    assert pending_operations["version"] == "0.0.0.2"
+    assert pending_operations["version"] == f"0.0.0.{pending_operations['releaseTime']}"
     assert pending_operations["updateType"] == "MAJOR"
     assert {
                "name": "NEW_VARIABLE",
@@ -106,11 +103,10 @@ def test_add_new_draft_dataset_change_data():
         'CHANGE_DATA', 'TEST_DATASET', 'Nye årganger', True
     )
 
-    with open(PENDING_OPERATIONS_FILE_PATH) as f:
-        pending_operations = json.load(f)
-    draft_metadata_all = datastore.get_metadata_all('draft')
+    pending_operations = read_pending_operations_from_file()
+    draft_metadata_all = datastore.get_metadata_all('DRAFT')
 
-    assert pending_operations["version"] == "0.0.0.2"
+    assert pending_operations["version"] == f"0.0.0.{pending_operations['releaseTime']}"
     assert pending_operations["updateType"] == "MAJOR"
     assert {
                "name": "TEST_DATASET",
@@ -140,3 +136,9 @@ def test_add_new_draft_dataset_not_built():
             'ADD', 'NOT_BUILT', 'finnes ikke', False
         )
     assert "No built data file for NOT_BUILT" in str(e.value)
+
+
+def read_pending_operations_from_file():
+    with open(PENDING_OPERATIONS_FILE_PATH) as f:
+        pending_operations = json.load(f)
+    return pending_operations

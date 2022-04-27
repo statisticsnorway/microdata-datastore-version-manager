@@ -1,11 +1,10 @@
 import os
-from typing import Tuple
 
 
 def get_metadata_path(dataset_name: str) -> str:
     built_dataset_dir = os.environ['BUILT_DATASETS_DIR']
     metadata_path = (
-        f'{built_dataset_dir}/{dataset_name}/{dataset_name}__0_0_0.json'
+        f'{built_dataset_dir}/{dataset_name}/{dataset_name}__DRAFT.json'
     )
     if os.path.exists(metadata_path):
         return metadata_path
@@ -18,7 +17,7 @@ def get_metadata_path(dataset_name: str) -> str:
 def get_data_path(dataset_name: str) -> str:
     built_dataset_dir = os.environ['BUILT_DATASETS_DIR']
     partitioned_parquet_path = (
-        f'{built_dataset_dir}/{dataset_name}/{dataset_name}__0_0'
+        f'{built_dataset_dir}/{dataset_name}/{dataset_name}__DRAFT'
     )
     parquet_path = f'{partitioned_parquet_path}.parquet'
 

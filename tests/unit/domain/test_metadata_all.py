@@ -32,7 +32,7 @@ def setup_environment(monkeypatch):
 
 def test_generate_metadata_all_draft():
     metadata_all.generate_metadata_all_draft()
-    metadata_all_draft = datastore.get_metadata_all('draft')
+    metadata_all_draft = datastore.get_metadata_all('DRAFT')
     data_structures = [
         data_structure['name']
         for data_structure in metadata_all_draft['dataStructures']
@@ -51,9 +51,9 @@ def test_create_new_version():
             "releaseStatus": "RELEASED"
         }
     ]
-    metadata_all.create_new_version(data_structures, "2.0.0", "3.0.0")
+    metadata_all.create_new_version(data_structures, "2.0.0.0", "3.0.0.0")
 
-    metadata_all_3 = datastore.get_metadata_all('3.0.0')
+    metadata_all_3 = datastore.get_metadata_all('3.0.0.0')
     data_structures = [
         data_structure for data_structure in metadata_all_3['dataStructures']
         if data_structure["name"] == "PERSON_SIVILSTAND"

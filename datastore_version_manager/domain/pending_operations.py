@@ -18,9 +18,7 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     })
 
     pending_operations["releaseTime"] = date.seconds_since_epoch()
-    pending_operations["version"] = semver.bump_draft_version(
-        pending_operations["version"]
-    )
+    pending_operations["version"] = f"0.0.0.{pending_operations['releaseTime']}"
     pending_operations["updateType"] = _get_update_type(
         data_structure_updates
     )
@@ -47,9 +45,7 @@ def remove(dataset_name: str):
         pending_operations["dataStructureUpdates"]
     )
     pending_operations["releaseTime"] = date.seconds_since_epoch()
-    pending_operations["version"] = semver.bump_draft_version(
-        pending_operations["version"]
-    )
+    pending_operations["version"] = f"0.0.0.{pending_operations['releaseTime']}"
     _archive()
     datastore.write_pending_operations(pending_operations)
     metadata_all.generate_metadata_all_draft()
@@ -78,9 +74,7 @@ def update_pending_operation(dataset_name: str, release_status: str, operation: 
             dataset["description"] = description
 
         pending_operations["releaseTime"] = date.seconds_since_epoch()
-        pending_operations["version"] = semver.bump_draft_version(
-            pending_operations["version"]
-        )
+        pending_operations["version"] = f"0.0.0.{pending_operations['releaseTime']}"
         pending_operations["updateType"] = _get_update_type(
             pending_operations["dataStructureUpdates"]
         )
