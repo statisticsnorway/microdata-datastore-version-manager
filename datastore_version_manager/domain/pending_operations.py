@@ -1,5 +1,6 @@
 from datastore_version_manager.adapter import datastore
 from datastore_version_manager.domain import metadata_all
+from datastore_version_manager.exceptions.exceptions import ForbiddenOperation
 from datastore_version_manager.util import semver, date
 from datastore_version_manager.adapter.constants import (
     RELEASE_STATUS_ALLOWED_TRANSITIONS
@@ -10,6 +11,16 @@ def add_new(dataset_name: str, operation: str, release_status: str,
             description: str) -> None:
     pending_operations = datastore.get_pending_operations()
     data_structure_updates = pending_operations["dataStructureUpdates"]
+
+    dataset_in_pending_operations = any(
+        dataset['name'] == dataset_name for dataset in data_structure_updates
+    )
+    if dataset_in_pending_operations:
+        raise PendingOperationException(
+            f'Cannot add new pending operation for {dataset_name} because it already exists. '
+            'Use update or hard delete.'
+        )
+
     data_structure_updates.append({
         "name": dataset_name,
         "operation": operation,
@@ -34,7 +45,7 @@ def remove(dataset_name: str):
         dataset['name'] == dataset_name for dataset in datastructure_updates
     )
     if not dataset_in_pending_operations:
-        raise datastore.DatasetNotFound(
+        raise DatasetNotFound(
             f'Dataset {dataset_name} not found in pending_operations.json'
         )
     for i in range(len(datastructure_updates)):
@@ -81,6 +92,12 @@ def update_pending_operation(dataset_name: str, release_status: str, operation: 
         datastore.write_pending_operations(pending_operations)
         metadata_all.generate_metadata_all_draft()
     else:
+        if datastore.is_dataset_in_datastore_versions(dataset_name, "DELETED"):
+            raise ForbiddenOperation(
+                f'Cannot update pending operations for variable "{dataset_name}". '
+                'This variable has been removed from datastore'
+            )
+
         if datastore.is_dataset_in_datastore_versions(dataset_name, 'RELEASED'):
             _check_if_transition_allowed('RELEASED', release_status)
             add_new(
@@ -144,4 +161,8 @@ class ReleaseStatusTransitionNotAllowed(Exception):
 
 
 class DatasetNotFound(Exception):
+    pass
+
+
+class PendingOperationException(Exception):
     pass

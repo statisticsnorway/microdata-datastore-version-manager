@@ -50,7 +50,7 @@ def test_remove_dataset_from_pending_operations():
 
 
 def test_remove_non_existing_dataset_from_pending_operations():
-    with pytest.raises(datastore.DatasetNotFound) as e:
+    with pytest.raises(pending_operations.DatasetNotFound) as e:
         pending_operations.remove("DOES_NOT_EXIST")
     assert (
         "Dataset DOES_NOT_EXIST not found in pending_operations.json"
@@ -67,3 +67,11 @@ def test_get_release_status_not_exist():
     dataset_name = 'DOES_NOT_EXIST'
     release_status = pending_operations.get_release_status(dataset_name)
     assert release_status is None
+
+
+def test_add_already_existing_dataset_to_pending_operations():
+    with pytest.raises(pending_operations.PendingOperationException) as e:
+        pending_operations.add_new("TEST_DATASET", "ADD", "DRAFT", "description")
+    assert (
+               "Cannot add new pending operation for TEST_DATASET because it already exists"
+           ) in str(e.value)

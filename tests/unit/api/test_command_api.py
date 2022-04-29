@@ -16,6 +16,13 @@ ADD_REQUEST = {
     'description': 'my mocked dataset'
 }
 
+
+REMOVE_REQUEST = {
+    'operationType': 'REMOVE',
+    'datasetName': 'MOCK_DATASET',
+    'description': 'my mocked dataset'
+}
+
 UPDATE_REQUEST = {
     'releaseStatus': 'PENDING_RELEASE'
 }
@@ -42,6 +49,24 @@ def test_post_pending_operations_add(flask_app, mocker):
         ADD_REQUEST['operationType'],
         ADD_REQUEST['datasetName'],
         ADD_REQUEST['description']
+    )
+    assert response.status_code == 200
+    assert response.json == {'message': 'OK'}
+
+
+def test_post_pending_operations_remove(flask_app, mocker):
+    spy = mocker.patch.object(
+        pending_operations, 'add_new', return_value=None
+    )
+    response = flask_app.post(
+        url_for('command_api.add_pending_operation'),
+        json=REMOVE_REQUEST
+    )
+    spy.assert_called_with(
+        REMOVE_REQUEST['datasetName'],
+        REMOVE_REQUEST['operationType'],
+        'PENDING_DELETE',
+        REMOVE_REQUEST['description']
     )
     assert response.status_code == 200
     assert response.json == {'message': 'OK'}
