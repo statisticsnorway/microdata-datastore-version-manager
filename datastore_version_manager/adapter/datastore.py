@@ -272,10 +272,3 @@ def write_data_versions(data_versions: dict, version: str) -> None:
     with open(data_versions_file_path, 'w') as f:
         json.dump(data_versions, f, indent=4, ensure_ascii=False)
 
-
-class DatasetNotFound(Exception):
-    pass
-
-
-class NoSuchPendingOperation(Exception):
-    pass
