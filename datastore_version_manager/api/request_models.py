@@ -14,9 +14,5 @@ class UpdatePendingOperationRequest(BaseModel, extra=Extra.forbid):
     operationType: Optional[str]
 
 
-class RemovePendingOperationRequest(BaseModel, extra=Extra.forbid):
-    datasetName: str
-
-
 class ApplyBumpManifestoRequest(BaseModel, extra=Extra.forbid):
     ...

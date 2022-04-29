@@ -9,7 +9,6 @@ from datastore_version_manager.exceptions.exceptions import (
 )
 from datastore_version_manager.api.request_models import (
     NewPendingOperationRequest,
-    RemovePendingOperationRequest,
     UpdatePendingOperationRequest,
     ApplyBumpManifestoRequest
 )
@@ -49,9 +48,10 @@ def add_pending_operation(body: NewPendingOperationRequest):
 
 @command_api.route('/pending-operations/<dataset_name>', methods=['DELETE'])
 @validate()
-def delete_pending_operation(body: RemovePendingOperationRequest):
-    # TODO: implement this case in draft_dataset
-    return {"message": "Not implemented"}, 500
+def delete_pending_operation(dataset_name):
+    logger.info(f'DELETE /pending-operations/{dataset_name}')
+    pending_operations.remove(dataset_name)
+    return {"message": "OK"}
 
 
 @command_api.route('/pending-operations/<dataset_name>', methods=['PUT'])
