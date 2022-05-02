@@ -82,8 +82,8 @@ def apply_bump_manifesto(client_bump_manifesto: list[dict], description: str):
     else:
         # There is a very small chance that pending operations could be changed
         # after getting current_bump_manifesto and before bump_version.
-        # Alternatively pending_ops_from_client could be used as parameter to bump_version
-        # and bump_version function must then not read the pending_operations.json file.
+        # Since the server will handle only one request at a time, we don't need
+        # to cater for that.
         bump_version(description)
 
 
