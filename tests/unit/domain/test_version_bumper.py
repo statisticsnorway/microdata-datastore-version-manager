@@ -56,11 +56,11 @@ def test_bump_version():
     assert pending_operations["releaseTime"] > previous_release_time
     assert pending_operations["updateType"] == ""
     assert pending_operations["dataStructureUpdates"][0] == {
-               "name": "DATASET_B",
-               "operation": "ADD",
-               "description": "Dataset B",
-               "releaseStatus": "DRAFT"
-           }
+        "name": "DATASET_B",
+        "operation": "ADD",
+        "description": "Dataset B",
+        "releaseStatus": "DRAFT"
+    }
 
     # metadata_all__1_0_0_0.json file - created
     metadata_all = datastore.get_metadata_all("0.1.0.0")
@@ -192,3 +192,15 @@ def test_bump_version_twice():
     assert data_versions["DATASET_A"] == "DATASET_A__0_1.parquet"
 
     assert len(datastore.get_archive('pending_operations')) == 0
+
+
+def test_get_bump_manifesto():
+    bump_manifesto = version_bumper.get_bump_manifesto()
+
+    assert len(bump_manifesto) == 1
+    assert {
+               "name": "DATASET_A",
+               "description": "Dataset A",
+               "operation": "ADD",
+               "releaseStatus": "PENDING_RELEASE"
+           } in bump_manifesto

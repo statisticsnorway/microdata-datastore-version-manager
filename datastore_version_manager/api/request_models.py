@@ -14,5 +14,13 @@ class UpdatePendingOperationRequest(BaseModel, extra=Extra.forbid):
     operationType: Optional[str]
 
 
+class PendingOperation(BaseModel, extra=Extra.forbid):
+    name: str
+    description: str
+    operation: str
+    releaseStatus: str
+
+
 class ApplyBumpManifestoRequest(BaseModel, extra=Extra.forbid):
-    ...
+    pendingOperations: list[PendingOperation]
+    description: str

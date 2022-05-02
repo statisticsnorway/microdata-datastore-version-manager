@@ -59,3 +59,33 @@ def _update_pending_operations(pending_ops):
     for data_structure in pending_ops["dataStructureUpdates"]:
         if data_structure["releaseStatus"] in ["PENDING_RELEASE", "PENDING_DELETE"]:
             pending_operations.remove(data_structure["name"])
+
+
+def get_bump_manifesto():
+    datastructure_updates = pending_operations.get_datastructure_updates()
+
+    filtered = [
+        data_structure for data_structure in datastructure_updates
+        if data_structure['releaseStatus'] == 'PENDING_RELEASE'
+        or data_structure['releaseStatus'] == 'PENDING_DELETE'
+    ]
+
+    return filtered
+
+
+def apply_bump_manifesto(pending_ops_from_client: list[dict], description: str):
+    bump_manifesto = get_bump_manifesto()
+    if not pending_ops_from_client == bump_manifesto:
+        raise BumpManifestoOutOfDate(
+            f'Bump manifesto has changed. Please retrieve it again.'
+        )
+    else:
+        # There is a very small chance that pending operations could be changed
+        # after getting bump_manifesto and before bump_version.
+        # Alternatively pending_ops_from_client could be used as parameter to bump_version
+        # and bump_version function must then not read the pending_operations.json file.
+        bump_version(description)
+
+
+class BumpManifestoOutOfDate(Exception):
+    pass
