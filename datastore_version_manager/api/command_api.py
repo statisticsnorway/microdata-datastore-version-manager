@@ -74,6 +74,6 @@ def get_bump_manifesto():
 @validate()
 def apply_bump_manifesto(body: ApplyBumpManifestoRequest):
     desc = body.description
-    pending_ops_from_client = [op.dict() for op in body.pendingOperations]
-    version_bumper.apply_bump_manifesto(pending_ops_from_client, desc)
+    client_bump_manifesto = [op.dict() for op in body.pendingOperations]
+    version_bumper.apply_bump_manifesto(client_bump_manifesto, desc)
     return {"message": "OK"}

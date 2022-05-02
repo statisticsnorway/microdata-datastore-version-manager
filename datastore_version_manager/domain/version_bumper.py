@@ -73,15 +73,15 @@ def get_bump_manifesto():
     return filtered
 
 
-def apply_bump_manifesto(pending_ops_from_client: list[dict], description: str):
-    bump_manifesto = get_bump_manifesto()
-    if not pending_ops_from_client == bump_manifesto:
+def apply_bump_manifesto(client_bump_manifesto: list[dict], description: str):
+    current_bump_manifesto = get_bump_manifesto()
+    if not client_bump_manifesto == current_bump_manifesto:
         raise BumpManifestoOutOfDate(
             f'Bump manifesto has changed. Please retrieve it again.'
         )
     else:
         # There is a very small chance that pending operations could be changed
-        # after getting bump_manifesto and before bump_version.
+        # after getting current_bump_manifesto and before bump_version.
         # Alternatively pending_ops_from_client could be used as parameter to bump_version
         # and bump_version function must then not read the pending_operations.json file.
         bump_version(description)
