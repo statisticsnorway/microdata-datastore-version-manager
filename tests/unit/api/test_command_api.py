@@ -1,5 +1,5 @@
 from flask import url_for
-from datastore_version_manager.domain import pending_operations, draft_dataset
+from datastore_version_manager.domain import pending_operations, draft_dataset, version_bumper
 
 MOCKED_DATASTRUCTURE_UPDATES = [
     {
@@ -9,6 +9,17 @@ MOCKED_DATASTRUCTURE_UPDATES = [
         "releaseStatus": "MOCK"
     }
 ]
+
+
+MOCKED_BUMP_MANIFESTO = [
+    {
+        "description": "mocked",
+        "name": "MOCKED A",
+        "operation": "MOCK",
+        "releaseStatus": "PENDING_RELEASE"
+    }
+]
+
 
 ADD_REQUEST = {
     'operationType': 'ADD_OR_CHANGE_DATA',
@@ -25,6 +36,12 @@ REMOVE_REQUEST = {
 
 UPDATE_REQUEST = {
     'releaseStatus': 'PENDING_RELEASE'
+}
+
+
+APPLY_BUMP_REQUEST = {
+    'pendingOperations': MOCKED_BUMP_MANIFESTO,
+    'description': 'description'
 }
 
 
@@ -73,7 +90,7 @@ def test_post_pending_operations_remove(flask_app, mocker):
 
 
 def test_delete_pending_operations(flask_app, mocker):
-    spy = mocker.patch.object(
+    mocker.patch.object(
         pending_operations, 'remove', return_value=None
     )
     response = flask_app.delete(
@@ -100,5 +117,25 @@ def test_update_pending_operation(flask_app, mocker):
     assert response.json == {'message': 'OK'}
 
 
-def test_update_pending_operation_forbidden():
-    ...
+def test_get_bump_manifesto(flask_app, mocker):
+    mocker.patch.object(
+        version_bumper, 'get_bump_manifesto',
+        return_value=MOCKED_BUMP_MANIFESTO
+    )
+    response = flask_app.get(url_for('command_api.get_bump_manifesto'))
+    assert response.json == MOCKED_BUMP_MANIFESTO
+
+
+def test_apply_bump_manifesto(flask_app, mocker):
+    spy = mocker.patch.object(
+        version_bumper, 'apply_bump_manifesto',
+        return_value=None
+    )
+    flask_app.post(
+        url_for('command_api.apply_bump_manifesto'),
+        json=APPLY_BUMP_REQUEST
+    )
+    spy.assert_called_with(
+        APPLY_BUMP_REQUEST['pendingOperations'],
+        APPLY_BUMP_REQUEST['description']
+    )

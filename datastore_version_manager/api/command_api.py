@@ -3,7 +3,7 @@ import logging
 from flask import Blueprint, jsonify
 from flask_pydantic import validate
 
-from datastore_version_manager.domain import pending_operations, draft_dataset
+from datastore_version_manager.domain import pending_operations, draft_dataset, version_bumper
 from datastore_version_manager.exceptions.exceptions import (
     ForbiddenOperation
 )
@@ -67,12 +67,13 @@ def update_pending_operation(dataset_name, body: UpdatePendingOperationRequest):
 @command_api.route('/datastore/bump', methods=['GET'])
 @validate()
 def get_bump_manifesto():
-    # TODO: implement this case in version_bumper
-    return {"message": "Not implemented"}, 500
+    return jsonify(version_bumper.get_bump_manifesto())
 
 
 @command_api.route('/datastore/bump', methods=['POST'])
 @validate()
 def apply_bump_manifesto(body: ApplyBumpManifestoRequest):
-    # TODO: implement this case in version_bumper
-    return {"message": "Not implemented"}, 500
+    desc = body.description
+    client_bump_manifesto = [op.dict() for op in body.pendingOperations]
+    version_bumper.apply_bump_manifesto(client_bump_manifesto, desc)
+    return {"message": "OK"}
