@@ -64,13 +64,11 @@ def _update_pending_operations(pending_ops):
 def get_bump_manifesto():
     datastructure_updates = pending_operations.get_datastructure_updates()
 
-    filtered = [
+    return [
         data_structure for data_structure in datastructure_updates
         if data_structure['releaseStatus'] == 'PENDING_RELEASE'
         or data_structure['releaseStatus'] == 'PENDING_DELETE'
     ]
-
-    return filtered
 
 
 def apply_bump_manifesto(client_bump_manifesto: list[dict], description: str):
