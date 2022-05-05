@@ -35,8 +35,10 @@ def add_pending_operation(body: NewPendingOperationRequest):
         draft_dataset.add_new_draft_dataset(operation_type, dataset_name, description)
         return {"message": "OK"}
     elif operation_type == 'PATCH_METADATA':
-        # TODO: implement this case in draft_dataset
-        return {"message": "Not implemented"}, 500
+        dataset_name = body.datasetName
+        description = body.description
+        draft_dataset.add_new_draft_dataset(operation_type, dataset_name, description)
+        return {"message": "OK"}
     elif operation_type == 'REMOVE':
         dataset_name = body.datasetName
         description = body.description
@@ -59,8 +61,8 @@ def delete_pending_operation(dataset_name):
 def update_pending_operation(dataset_name, body: UpdatePendingOperationRequest):
     logger.info(f'PUT /pending-operations/{dataset_name} with body {body}')
     release_status = body.releaseStatus
-    operation_type = body.operationType
-    draft_dataset.update_pending_operation(dataset_name, release_status, operation_type)
+    description = body.description
+    draft_dataset.update_pending_operation(dataset_name, release_status, description)
     return {"message": "OK"}
 
 

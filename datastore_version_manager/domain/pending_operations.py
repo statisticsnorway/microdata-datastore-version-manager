@@ -1,10 +1,9 @@
 from datastore_version_manager.adapter import datastore
-from datastore_version_manager.domain import metadata_all
-from datastore_version_manager.exceptions.exceptions import ForbiddenOperation
-from datastore_version_manager.util import semver, date
 from datastore_version_manager.adapter.constants import (
     RELEASE_STATUS_ALLOWED_TRANSITIONS
 )
+from datastore_version_manager.domain import metadata_all
+from datastore_version_manager.util import semver, date
 
 
 def add_new(dataset_name: str, operation: str, release_status: str,
@@ -12,14 +11,7 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations = datastore.get_pending_operations()
     data_structure_updates = pending_operations["dataStructureUpdates"]
 
-    dataset_in_pending_operations = any(
-        dataset['name'] == dataset_name for dataset in data_structure_updates
-    )
-    if dataset_in_pending_operations:
-        raise PendingOperationException(
-            f'Cannot add new pending operation for {dataset_name} because it already exists. '
-            'Use update or hard delete.'
-        )
+    check_if_dataset_not_already_present(data_structure_updates, dataset_name)
 
     data_structure_updates.append({
         "name": dataset_name,
@@ -36,6 +28,17 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     _archive()
     datastore.write_pending_operations(pending_operations)
     metadata_all.generate_metadata_all_draft()
+
+
+def check_if_dataset_not_already_present(data_structure_updates: dict, dataset_name: str):
+    dataset_in_pending_operations = any(
+        dataset['name'] == dataset_name for dataset in data_structure_updates
+    )
+    if dataset_in_pending_operations:
+        raise PendingOperationException(
+            f'Cannot add new pending operation for {dataset_name} because it already exists. '
+            'Use update or hard delete.'
+        )
 
 
 def remove(dataset_name: str):
@@ -62,8 +65,7 @@ def remove(dataset_name: str):
     metadata_all.generate_metadata_all_draft()
 
 
-def update_pending_operation(dataset_name: str, release_status: str, operation: str,
-                             description: str = None) -> None:
+def update_pending_operation(dataset_name: str, release_status: str, description: str = None) -> None:
     pending_operations = datastore.get_pending_operations()
     pending_operations_list = pending_operations["dataStructureUpdates"]
     try:
@@ -92,23 +94,10 @@ def update_pending_operation(dataset_name: str, release_status: str, operation: 
         datastore.write_pending_operations(pending_operations)
         metadata_all.generate_metadata_all_draft()
     else:
-        if datastore.is_dataset_in_datastore_versions(dataset_name, "DELETED"):
-            raise ForbiddenOperation(
-                f'Cannot update pending operations for variable "{dataset_name}". '
-                'This variable has been removed from datastore'
-            )
-
-        if datastore.is_dataset_in_datastore_versions(dataset_name, 'RELEASED'):
-            _check_if_transition_allowed('RELEASED', release_status)
-            add_new(
-                dataset_name, operation, release_status, description
-            )
-        # dataset not found -> it needs to be ADDED first
-        else:
-            raise DatasetNotFound(
-                f'Dataset {dataset_name} with status RELEASED '
-                'not found in datastore_versions'
-            )
+        raise PendingOperationException(
+            f'Cannot update pending operation for dataset {dataset_name}. '
+            'Please add a new pending operation first.'
+        )
 
 
 def get_release_status(dataset_name: str) -> str:

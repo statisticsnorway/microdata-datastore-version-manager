@@ -11,7 +11,7 @@ class NewPendingOperationRequest(BaseModel, extra=Extra.forbid):
 
 class UpdatePendingOperationRequest(BaseModel, extra=Extra.forbid):
     releaseStatus: str
-    operationType: Optional[str]
+    description: Optional[str]
 
 
 class PendingOperation(BaseModel, extra=Extra.forbid):
