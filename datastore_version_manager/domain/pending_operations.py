@@ -11,7 +11,7 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     pending_operations = datastore.get_pending_operations()
     data_structure_updates = pending_operations["dataStructureUpdates"]
 
-    check_if_dataset_not_already_present(data_structure_updates, dataset_name)
+    check_if_dataset_in_pending_operations(data_structure_updates, dataset_name)
 
     data_structure_updates.append({
         "name": dataset_name,
@@ -30,7 +30,7 @@ def add_new(dataset_name: str, operation: str, release_status: str,
     metadata_all.generate_metadata_all_draft()
 
 
-def check_if_dataset_not_already_present(data_structure_updates: dict, dataset_name: str):
+def check_if_dataset_in_pending_operations(data_structure_updates: dict, dataset_name: str):
     dataset_in_pending_operations = any(
         dataset['name'] == dataset_name for dataset in data_structure_updates
     )
