@@ -28,6 +28,13 @@ ADD_REQUEST = {
 }
 
 
+PATCH_METADATA_REQUEST = {
+    'operationType': 'PATCH_METADATA',
+    'datasetName': 'MOCK_DATASET',
+    'description': 'my mocked dataset'
+}
+
+
 REMOVE_REQUEST = {
     'operationType': 'REMOVE',
     'datasetName': 'MOCK_DATASET',
@@ -66,6 +73,23 @@ def test_post_pending_operations_add(flask_app, mocker):
         ADD_REQUEST['operationType'],
         ADD_REQUEST['datasetName'],
         ADD_REQUEST['description']
+    )
+    assert response.status_code == 200
+    assert response.json == {'message': 'OK'}
+
+
+def test_post_pending_operations_patch_metadata(flask_app, mocker):
+    spy = mocker.patch.object(
+        draft_dataset, 'add_new_draft_dataset', return_value=None
+    )
+    response = flask_app.post(
+        url_for('command_api.add_pending_operation'),
+        json=PATCH_METADATA_REQUEST
+    )
+    spy.assert_called_with(
+        PATCH_METADATA_REQUEST['operationType'],
+        PATCH_METADATA_REQUEST['datasetName'],
+        PATCH_METADATA_REQUEST['description']
     )
     assert response.status_code == 200
     assert response.json == {'message': 'OK'}

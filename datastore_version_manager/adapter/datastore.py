@@ -96,7 +96,8 @@ def delete_draft_dataset(dataset_name: str):
         os.remove(single_parquet)
     else:
         partitioned_parquet = f'{data_dir}/{dataset_name}__DRAFT'
-        shutil.rmtree(partitioned_parquet)
+        if os.path.exists(partitioned_parquet):
+            shutil.rmtree(partitioned_parquet)
 
     if len(os.listdir(data_dir)) == 0:
         shutil.rmtree(data_dir)

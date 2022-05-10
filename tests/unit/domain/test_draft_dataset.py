@@ -9,7 +9,7 @@ from datastore_version_manager.adapter.built_datasets import (
     NoBuiltDataset
 )
 from datastore_version_manager.domain.pending_operations import (
-    ReleaseStatusTransitionNotAllowed
+    ReleaseStatusTransitionNotAllowed, PendingOperationException
 )
 
 PENDING_OPERATIONS_FILE_PATH = (
@@ -32,9 +32,9 @@ def teardown_function():
     )
 
 
-def test_update_release_status():
+def test_update_pending_operation():
     draft_dataset.update_pending_operation(
-        'TEST_DATASET', 'PENDING_RELEASE', 'ADD', 'Nytt datasett om test'
+        'TEST_DATASET', 'PENDING_RELEASE', 'Nytt datasett om test'
     )
 
     pending_operations = read_pending_operations_from_file()
@@ -49,31 +49,18 @@ def test_update_release_status():
            } in pending_operations["dataStructureUpdates"]
 
 
-def test_update_release_status_not_allowed():
+def test_update_pending_operation_transition_not_allowed():
     with pytest.raises(ReleaseStatusTransitionNotAllowed):
-        draft_dataset.update_pending_operation('TEST_DATASET', 'DRAFT', 'ADD')
+        draft_dataset.update_pending_operation(
+            'TEST_DATASET', 'DRAFT'
+        )
 
 
-def test_update_release_status_pending_delete():
-    draft_dataset.update_pending_operation(
-        'PERSON_SIVILSTAND', 'PENDING_DELETE', 'REMOVE', 'Fjernet'
-    )
-
-    pending_operations = read_pending_operations_from_file()
-    draft_metadata_all = datastore.get_metadata_all('DRAFT')
-
-    assert pending_operations["version"] == f"0.0.0.{pending_operations['releaseTime']}"
-    assert pending_operations["updateType"] == "MAJOR"
-    assert {
-               "name": "PERSON_SIVILSTAND",
-               "operation": "REMOVE",
-               "description": "Fjernet",
-               "releaseStatus": "PENDING_DELETE"
-           } in pending_operations["dataStructureUpdates"]
-    assert not any([
-        data_structure["name"] == 'PERSON_SIVILSTAND'
-        for data_structure in draft_metadata_all["dataStructures"]
-    ])
+def test_update_pending_operation_with_nonexisting_dataset():
+    with pytest.raises(PendingOperationException):
+        draft_dataset.update_pending_operation(
+            'DATASET_NOT_ADDED_BEFORE', 'DRAFT'
+        )
 
 
 def test_add_new_draft_dataset():
