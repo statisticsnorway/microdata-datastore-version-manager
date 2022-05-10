@@ -1,3 +1,4 @@
+import json
 import os
 
 
@@ -12,6 +13,21 @@ def get_metadata_path(dataset_name: str) -> str:
         raise NoBuiltDataset(
             f"No built metadata file for {dataset_name}"
         )
+
+
+def get_metadata(dataset_name: str) -> dict:
+    metadata_json = (
+        get_metadata_path(
+            dataset_name
+        )
+    )
+    with open(metadata_json, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def write_metadata(metadata: dict, json_path: str):
+    with open(json_path, 'w', encoding="utf-8") as f:
+        json.dump(metadata, f, indent=4, ensure_ascii=False)
 
 
 def get_data_path(dataset_name: str) -> str:

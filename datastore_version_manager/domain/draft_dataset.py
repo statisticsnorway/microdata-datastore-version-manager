@@ -6,7 +6,7 @@ from datastore_version_manager.adapter import (
 from datastore_version_manager.adapter.constants import (
     USER_CHANGEABLE_RELEASE_STATUSES
 )
-from datastore_version_manager.domain import pending_operations
+from datastore_version_manager.domain import pending_operations, metadata_patcher
 from datastore_version_manager.exceptions.exceptions import (
     ForbiddenOperation, NoSuchReleaseStatus
 )
@@ -55,9 +55,23 @@ def add_new_draft_dataset(operation_type: str,
     draft_metadata_path = datastore.get_metadata_file_path(
         dataset_name, "DRAFT"
     )
+
+    if operation_type == 'PATCH_METADATA':
+        patch_metadata(built_metadata_path, dataset_name)
+
     shutil.move(built_metadata_path, draft_metadata_path)
 
     pending_operations.add_new(dataset_name, operation_type, "DRAFT", description)
+
+
+def patch_metadata(built_metadata_path: str, dataset_name: str):
+    latest_version = datastore.get_latest_version()
+    latest_metadata = datastore.get_metadata(
+        dataset_name, latest_version
+    )
+    built_metadata = built_datasets.get_metadata(dataset_name)
+    patched = metadata_patcher.patch(built_metadata, latest_metadata)
+    built_datasets.write_metadata(patched, built_metadata_path)
 
 
 def check_if_dataset_was_deleted(dataset_name):
