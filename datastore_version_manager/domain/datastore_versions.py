@@ -37,5 +37,32 @@ def bump_datastore_versions(description: str, pending_ops: dict, release_time: i
     return data_structures_to_bump, new_version
 
 
+def get_released_datasets():
+    datastore_versions = datastore.get_datastore_versions()
+
+    version_instances = datastore_versions["versions"]
+
+    released_datasets = []
+    deleted_datasets = []
+    for version_instance in version_instances:
+        for data_structure_update in version_instance["dataStructureUpdates"]:
+            if data_structure_update["releaseStatus"] == "DELETED":
+                deleted_datasets.append(data_structure_update["name"])
+                continue
+            if data_structure_update["name"] in deleted_datasets:
+                continue
+            if any(released_dataset['datasetName'] == data_structure_update["name"]
+                   for released_dataset in released_datasets):
+                continue
+            released_datasets.append(
+                {
+                    "datasetName": data_structure_update["name"],
+                    "version": version_instance["version"][:-2],
+                    "operation": data_structure_update["operation"]
+                }
+            )
+    return released_datasets
+
+
 class NothingToBump(Exception):
     pass

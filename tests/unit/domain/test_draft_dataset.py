@@ -120,7 +120,7 @@ def test_add_new_draft_dataset_already_versioned():
 def test_add_new_draft_dataset_deleted_in_datastore():
     with pytest.raises(ForbiddenOperation) as e:
         draft_dataset.add_new_draft_dataset(
-            'ADD_OR_CHANGE_DATA', 'DELETED_DATASET', 'Nye data'
+            'ADD_OR_CHANGE_DATA', 'DATASET_TO_DELETE', 'Nye data'
         )
     assert (
         "This variable has been removed from datastore"
