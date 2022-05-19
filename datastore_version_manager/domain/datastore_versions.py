@@ -51,12 +51,13 @@ def get_released_datasets():
                 continue
             if data_structure_update["name"] in deleted_datasets:
                 continue
-            if any(d['datasetName'] == data_structure_update["name"] for d in released_datasets):
+            if any(released_dataset['datasetName'] == data_structure_update["name"]
+                   for released_dataset in released_datasets):
                 continue
             released_datasets.append(
                 {
                     "datasetName": data_structure_update["name"],
-                    "version": version_instance["version"],
+                    "version": version_instance["version"][:-2],
                     "operation": data_structure_update["operation"]
                 }
             )
