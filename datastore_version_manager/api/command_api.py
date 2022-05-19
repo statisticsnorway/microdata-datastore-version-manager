@@ -90,4 +90,4 @@ def apply_bump_manifesto(body: ApplyBumpManifestoRequest):
 @validate()
 def get_released_datasets():
     logger.info(f'GET /released-datasets')
-    return datastore_versions.get_released_datasets()
+    return {"released_datasets": datastore_versions.get_released_datasets()}
