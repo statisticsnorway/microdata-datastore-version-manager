@@ -23,7 +23,7 @@
         },
         {
           "description": "Deleted",
-          "name": "DELETED_DATASET",
+          "name": "DATASET_TO_DELETE",
           "operation": "REMOVE",
           "releaseStatus": "DELETED"
         }
@@ -38,6 +38,12 @@
         {
           "description": "Første variabel",
           "name": "SKATT_BRUTTOINNTEKT",
+          "operation": "ADD",
+          "releaseStatus": "RELEASED"
+        },
+        {
+          "description": "Will be deleted in next version",
+          "name": "DATASET_TO_DELETE",
           "operation": "ADD",
           "releaseStatus": "RELEASED"
         }

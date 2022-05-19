@@ -3,7 +3,12 @@ import logging
 from flask import Blueprint, jsonify
 from flask_pydantic import validate
 
-from datastore_version_manager.domain import pending_operations, draft_dataset, version_bumper
+from datastore_version_manager.domain import (
+    pending_operations,
+    draft_dataset,
+    version_bumper,
+    datastore_versions
+)
 from datastore_version_manager.exceptions.exceptions import (
     ForbiddenOperation
 )
@@ -79,3 +84,10 @@ def apply_bump_manifesto(body: ApplyBumpManifestoRequest):
     client_bump_manifesto = [op.dict() for op in body.pendingOperations]
     version_bumper.apply_bump_manifesto(client_bump_manifesto, desc)
     return {"message": "OK"}
+
+
+@command_api.route('/released-datasets', methods=['GET'])
+@validate()
+def get_released_datasets():
+    logger.info(f'GET /released-datasets')
+    return datastore_versions.get_released_datasets()
