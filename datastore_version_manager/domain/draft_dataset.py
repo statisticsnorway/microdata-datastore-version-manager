@@ -70,7 +70,7 @@ def patch_metadata(built_metadata_path: str, dataset_name: str):
         dataset_name, latest_version
     )
     built_metadata = built_datasets.get_metadata(dataset_name)
-    patched = metadata_patcher.patch(built_metadata, latest_metadata)
+    patched = metadata_patcher.validate_patch(built_metadata, latest_metadata)
     built_datasets.write_metadata(patched, built_metadata_path)
 
 
