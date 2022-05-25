@@ -38,10 +38,14 @@ def validate_patch(source_metadata: dict, destination_metadata: dict) -> dict:
                      ])
 
     if 'dictionary_item_added' in ddiff:
-        raise Exception(f"Is is not allowed to add new metadata fields: {ddiff['dictionary_item_added']}")
+        raise PatchMetadataException(f"Is is not allowed to add new metadata fields: {ddiff['dictionary_item_added']}")
     if 'dictionary_item_removed' in ddiff:
-        raise Exception(f"Is is not allowed to remove metadata fields: {ddiff['dictionary_item_removed']}")
+        raise PatchMetadataException(f"Is is not allowed to remove metadata fields: {ddiff['dictionary_item_removed']}")
     if 'values_changed' in ddiff:
-        raise Exception(f"There are changes in metadata fields that are not allowed: {ddiff['values_changed']}")
+        raise PatchMetadataException(f"There are changes in metadata fields that are not allowed: {ddiff['values_changed']}")
 
     return source_metadata
+
+
+class PatchMetadataException(Exception):
+    pass

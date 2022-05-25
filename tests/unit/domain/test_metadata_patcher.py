@@ -4,6 +4,7 @@ import shutil
 import pytest
 
 from datastore_version_manager.domain import metadata_patcher
+from datastore_version_manager.domain.metadata_patcher import PatchMetadataException
 
 PATCH_METADATA_DIR = 'tests/resources/patch_metadata'
 WITH_CODE_LIST_DIR = f'{PATCH_METADATA_DIR}/dataset_with_code_list'
@@ -51,7 +52,7 @@ def test_patch_metadata_illegal_fields_changes():
     source = load_file(f'{INVALID_DIR}/source_SYNT_BEFOLKNING_KJOENN.json')
     destination = load_file(f'{INVALID_DIR}/destination_SYNT_BEFOLKNING_KJOENN.json')
 
-    with pytest.raises(Exception) as e:
+    with pytest.raises(PatchMetadataException) as e:
         metadata_patcher.validate_patch(source, destination)
 
     expected = str(e.value).replace('\'', '').replace('"', '')
