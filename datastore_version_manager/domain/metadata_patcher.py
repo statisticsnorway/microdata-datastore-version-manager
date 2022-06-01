@@ -49,6 +49,7 @@ def patch_metadata(source_metadata: dict, destination_metadata: dict) -> dict:
             f"There are changes in metadata fields that are not allowed: {ddiff['values_changed']}")
 
     _patch_valid_periods(source_metadata, destination_metadata)
+    _patch_temporal_coverage(source_metadata, destination_metadata)
 
     return source_metadata
 
@@ -75,6 +76,12 @@ def _patch_valid_periods(source_metadata: dict, destination_metadata: dict):
             if 'stop' in represented_var['validPeriod']:
                 source_metadata['attributeVariables'][idx]['representedVariables'][idx_repr_var]['validPeriod']['stop'] \
                     = represented_var['validPeriod']['stop']
+
+
+def _patch_temporal_coverage(source_metadata: dict, destination_metadata: dict):
+    source_metadata['temporalCoverage']['start'] = destination_metadata['temporalCoverage']['start']
+    if 'stop' in destination_metadata['temporalCoverage']:
+        source_metadata['temporalCoverage']['stop'] = destination_metadata['temporalCoverage']['stop']
 
 
 class PatchMetadataException(Exception):
