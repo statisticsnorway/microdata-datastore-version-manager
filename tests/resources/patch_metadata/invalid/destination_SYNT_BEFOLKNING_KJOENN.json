@@ -1,110 +1,113 @@
 {
-  "shortName": "SYNT_BEFOLKNING_KJOENN",
-  "temporalityType": "FIXED",
-  "populationDescription": [{"languageCode": "no", "value": "Kjønn for en populasjon"}],
-  "spatialCoverageDescription": [{"languageCode": "no", "value": "Norge"}],
-  "dataRevision": {
-    "description": [{"languageCode": "no","value": "Første publisering."}],
-    "temporalEndOfSeries": false
+  "name": "SYNT_BEFOLKNING_KJOENN",
+  "populationDescription": "Kj\u00f8nn for en populasjon",
+  "languageCode": "no",
+  "temporality": "FIXED",
+  "subjectFields": [
+    "Helse",
+    "Helsetjenester"
+  ],
+  "temporalCoverage": {
+    "start": null
   },
   "identifierVariables": [
     {
-      "variableRole": "IDENTIFIER",
-      "shortName": "PERSONID_1",
-      "name": [{"languageCode": "no", "value": "Personidentifikator"}],
-      "description": [{"languageCode": "no","value": "Identifikator for person i Microdata"}],
-      "dataType": "STRING",
-      "unitType": {
-        "shortName": "PERSON",
-        "name": [{"languageCode": "no", "value": "Person"}],
-        "description": [{"languageCode": "no", "value": "Statistisk enhet er person (individ, enkeltmenenske)"}]
-      },
-      "format": "RandomUInt48",
-      "valueDomain": {
-        "shortName": "PERSONID_1",
-        "description": [{"languageCode": "no", "value":"Pseudonymisert personnummer"}]
-      }
-    }
-  ],
-  "measureVariables": [
-    {
-      "variableRole": "MEASURE",
-      "shortName": "SYNT_BEFOLKNING_KJONN",
-      "name": [{"languageCode": "no", "value": "Kjønn"}],
-      "description": [{"languageCode": "no", "value": "Rapportert kjønn for person"}],
-      "subjectFields": [
+      "variableRole": "Identifier",
+      "name": "PERSONID_1",
+      "label": "Personidentifikator",
+      "dataType": "String",
+      "representedVariables": [
         {
-          "shortName": "HELSE",
-          "name": [{"languageCode": "no", "value": "Helse"}],
-          "description": [{"languageCode": "no", "value": "Helse"}]
-        },
-        {
-          "shortName": "HELSETJENESTER",
-          "name": [{"languageCode": "no", "value": "Helsetjenester"}],
-          "description": [{"languageCode": "no", "value": "Helsetjenester"}]
+          "description": "Identifikator for person i Microdata",
+          "validPeriod": {
+            "start": null,
+            "stop": null
+          },
+          "valueDomain": {
+            "description": "Pseudonymisert personnummer",
+            "unitOfMeasure": "N/A"
+          }
         }
       ],
-      "dataType": "STRING",
-      "uriDefinition": [""],
-      "valueDomain": {
-        "uriDefinition": [""],
-        "codeList": {
-          "codeItems": [
-            {
-              "code": "1",
-              "categoryTitle": [{"languageCode": "no", "value": "Mann"}],
-              "validFrom": "1900-01-01"
-            },
-            {
-              "code": "2",
-              "categoryTitle": [{"languageCode": "no", "value": "Kvinne"}],
-              "validFrom": "1900-01-01"
-            }
-          ]
-        },
-        "sentinelAndMissingValues" : [
-          {
-            "code": "0",
-            "categoryTitle": [
-              {"languageCode": "no", "value": "Kjønn ukjent"}
-            ],
-            "validFrom": "1900-01-01"
-          }
-        ]
+      "format": "RandomUInt48",
+      "keyType": {
+        "name": "PERSON",
+        "label": "Person",
+        "description": "Statistisk enhet er person (individ, enkeltmenenske)"
       }
     }
   ],
+  "measureVariable": {
+    "variableRole": "Measure",
+    "name": "SYNT_BEFOLKNING_KJONN",
+    "label": "Kj\u00f8nn",
+    "dataType": "String",
+    "representedVariables": [
+      {
+        "description": "Rapportert kj\u00f8nn for person",
+        "validPeriod": {
+          "start": -25567
+        },
+        "valueDomain": {
+          "codeList": [
+            {
+              "category": "Mann",
+              "code": "1"
+            },
+            {
+              "category": "Kvinne",
+              "code": "2"
+            },
+            {
+              "category": "Kj\u00f8nn ukjent",
+              "code": "0"
+            }
+          ],
+          "missingValues": [
+            "0"
+          ]
+        }
+      }
+    ]
+  },
   "attributeVariables": [
     {
       "variableRole": "START_TIME",
-      "shortName": "START",
-      "name": [
-        {"languageCode": "no", "value": "Startdato"},
-        {"languageCode": "en", "value": "Start date"}
-      ],
-      "description": [{"languageCode": "no", "value": "Startdato/måletidspunktet for hendelsen"}
-      ],
-      "dataType": "DATE",
-      "valueDomain": {
-        "description": [{"languageCode": "no", "value": "Dato oppgitt i dager siden 1970-01-01"}]
-      }
+      "name": "START",
+      "label": "Startdato",
+      "dataType": "Instant",
+      "representedVariables": [
+        {
+          "description": "Startdato/m\u00e5letidspunktet for hendelsen",
+          "validPeriod": {
+            "start": null,
+            "stop": null
+          },
+          "valueDomain": {
+            "description": "Dato oppgitt i dager siden 1970-01-01",
+            "unitOfMeasure": "N/A"
+          }
+        }
+      ]
     },
     {
       "variableRole": "STOP_TIME",
-      "shortName": "STOP",
-      "name": [
-        {"languageCode": "no", "value": "Stoppdato"},
-        {"languageCode": "en", "value": "Stop date"}
-      ],
-      "description": [
-        {"languageCode": "no", "value": "Stoppdato/sluttdato for hendelsen"},
-        {"languageCode": "en", "value": "Event stop/end date"}
-      ],
-      "dataType": "DATE",
-      "valueDomain": {
-        "description": [{"languageCode": "no", "value": "Dato oppgitt i dager siden 1970-01-01"}
-        ]
-      }
+      "name": "STOP",
+      "label": "Stoppdato",
+      "dataType": "Instant",
+      "representedVariables": [
+        {
+          "description": "Stoppdato/sluttdato for hendelsen",
+          "validPeriod": {
+            "start": null,
+            "stop": null
+          },
+          "valueDomain": {
+            "description": "Dato oppgitt i dager siden 1970-01-01",
+            "unitOfMeasure": "N/A"
+          }
+        }
+      ]
     }
   ]
 }
