@@ -38,7 +38,7 @@ def test_generate_metadata_all_draft():
         for data_structure in metadata_all_draft['dataStructures']
     ]
     assert data_structures == [
-        'PERSON_SIVILSTAND', 'TEST_DATASET', 'ANOTHER_TEST_DATASET'
+        'PERSON_SIVILSTAND', 'TEST_DATASET_3', 'TEST_DATASET', 'ANOTHER_TEST_DATASET'
     ]
 
 

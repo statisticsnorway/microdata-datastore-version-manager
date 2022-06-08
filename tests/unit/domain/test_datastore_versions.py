@@ -8,8 +8,11 @@ def setup_environment(monkeypatch):
 
 
 def test_get_released_datasets():
-    expected = [{'datasetName': 'PERSON_SIVILSTAND', 'version': '2.0.0', 'operation': 'ADD'},
-                {'datasetName': 'SKATT_BRUTTOINNTEKT', 'version': '2.0.0', 'operation': 'CHANGE_DATA'}]
+    expected = [
+        {'datasetName': 'PERSON_SIVILSTAND', 'version': '2.0.0', 'operation': 'ADD'},
+        {'datasetName': 'SKATT_BRUTTOINNTEKT', 'version': '2.0.0', 'operation': 'CHANGE_DATA'},
+        {'datasetName': 'TEST_DATASET_3', 'version': '2.0.0', 'operation': 'ADD'}
+    ]
 
     actual = datastore_versions.get_released_datasets()
     assert actual == expected

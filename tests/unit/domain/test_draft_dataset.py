@@ -1,16 +1,17 @@
-import pytest
-import shutil
 import json
+import shutil
+
+import pytest
 
 from datastore_version_manager.adapter import datastore
-from datastore_version_manager.domain import draft_dataset
-from datastore_version_manager.exceptions.exceptions import ForbiddenOperation
 from datastore_version_manager.adapter.built_datasets import (
     NoBuiltDataset
 )
+from datastore_version_manager.domain import draft_dataset
 from datastore_version_manager.domain.pending_operations import (
     ReleaseStatusTransitionNotAllowed, PendingOperationException
 )
+from datastore_version_manager.exceptions.exceptions import ForbiddenOperation
 
 PENDING_OPERATIONS_FILE_PATH = (
     'tests/resources/SSB_FDB/datastore/pending_operations.json'
@@ -133,6 +134,30 @@ def test_add_new_draft_dataset_not_built():
             'ADD_OR_CHANGE_DATA', 'NOT_BUILT', 'finnes ikke'
         )
     assert "No built data file for NOT_BUILT" in str(e.value)
+
+
+def test_add_new_draft_dataset_patch_metadata():
+    draft_dataset.add_new_draft_dataset(
+        'PATCH_METADATA', 'TEST_DATASET_3', 'Some fields need patching'
+    )
+
+    pending_operations = read_pending_operations_from_file()
+    draft_metadata_all = datastore.get_metadata_all('DRAFT')
+
+    assert {
+               "name": "TEST_DATASET_3",
+               "operation": "PATCH_METADATA",
+               "description": "Some fields need patching",
+               "releaseStatus": "DRAFT"
+           } in pending_operations["dataStructureUpdates"]
+
+    test_dataset_3 = [
+        data_structure for data_structure in draft_metadata_all['dataStructures']
+        if data_structure["name"] == "TEST_DATASET_3"
+    ][0]
+    assert test_dataset_3['identifierVariables'][0]['label'] == "new value"
+    assert test_dataset_3['identifierVariables'][0]['representedVariables'][0]['description'] == "new value"
+    assert test_dataset_3['measureVariable']['label'] == "new value"
 
 
 def read_pending_operations_from_file():

@@ -1,11 +1,11 @@
 {
-  "name": "TEST_DATASET",
-  "populationDescription": "Alle yngre personer",
+  "name": "TEST_DATASET_3",
+  "populationDescription": "Alle personer",
   "temporalCoverage": {
     "start": -15492,
     "stop": 18583
   },
-  "temporality": "STATUS TYPO",
+  "temporality": "STATUS",
   "identifierVariables": [
     {
       "variableRole": "Identifier",
@@ -27,7 +27,8 @@
     }
   ],
   "measureVariable": {
-    "name": "TEST_DATASET",
+    "variableRole": "Measure",
+    "name": "TEST_DATASET_3",
     "label": "Sivilstand",
     "dataType": "STRING",
     "representedVariables": [
@@ -122,16 +123,42 @@
   "languageCode": "no",
   "attributeVariables": [
     {
+      "variableRole": "START_TIME",
       "name": "START",
       "label": "Startdato",
       "dataType": "Instant",
-      "variableRole": "START_TIME"
+      "representedVariables": [
+        {
+          "description": "Startdato/m\u00e5letidspunktet for hendelsen",
+          "validPeriod": {
+            "start": 16436,
+            "stop": 18627
+          },
+          "valueDomain": {
+            "description": "Dato oppgitt i dager siden 1970-01-01",
+            "unitOfMeasure": "N/A"
+          }
+        }
+      ]
     },
     {
+      "variableRole": "STOP_TIME",
       "name": "STOP",
       "label": "Stoppdato",
       "dataType": "Instant",
-      "variableRole": "STOP_TIME"
+      "representedVariables": [
+        {
+          "description": "Stoppdato/sluttdato for hendelsen",
+          "validPeriod": {
+            "start": 16436,
+            "stop": 18627
+          },
+          "valueDomain": {
+            "description": "Dato oppgitt i dager siden 1970-01-01",
+            "unitOfMeasure": "N/A"
+          }
+        }
+      ]
     }
   ]
 }

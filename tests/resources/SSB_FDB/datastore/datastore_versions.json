@@ -26,6 +26,12 @@
           "name": "DATASET_TO_DELETE",
           "operation": "REMOVE",
           "releaseStatus": "DELETED"
+        },
+        {
+          "description": "Test dataset 3",
+          "name": "TEST_DATASET_3",
+          "operation": "ADD",
+          "releaseStatus": "RELEASED"
         }
       ]
     },
