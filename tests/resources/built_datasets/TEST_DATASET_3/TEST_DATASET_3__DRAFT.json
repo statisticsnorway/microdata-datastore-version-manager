@@ -1,6 +1,6 @@
 {
-  "name": "TEST_DATASET",
-  "populationDescription": "Alle gamle personer",
+  "name": "TEST_DATASET_3",
+  "populationDescription": "Alle personer",
   "temporalCoverage": {
     "start": -15492,
     "stop": 18583
@@ -10,7 +10,7 @@
     {
       "variableRole": "Identifier",
       "name": "PERSONID_1",
-      "label": "Personidentifikator",
+      "label": "new value",
       "dataType": "STRING",
       "representedVariables": [
         {
@@ -18,7 +18,7 @@
             "start": -15492,
             "stop": 18583
           },
-          "description": "Identifikator for person i form av fødselsnummer eller d-nummer.",
+          "description": "new value",
           "valueDomain": {
             "description": "Pseudonymisert fødselsnummer"
           }
@@ -27,8 +27,9 @@
     }
   ],
   "measureVariable": {
-    "name": "TEST_DATASET",
-    "label": "Sivilstand",
+    "variableRole": "Measure",
+    "name": "TEST_DATASET_3",
+    "label": "new value",
     "dataType": "STRING",
     "representedVariables": [
       {
@@ -122,16 +123,42 @@
   "languageCode": "no",
   "attributeVariables": [
     {
+      "variableRole": "START_TIME",
       "name": "START",
       "label": "Startdato",
       "dataType": "Instant",
-      "variableRole": "START_TIME"
+      "representedVariables": [
+        {
+          "description": "Startdato/m\u00e5letidspunktet for hendelsen",
+          "validPeriod": {
+            "start": 16436,
+            "stop": 18627
+          },
+          "valueDomain": {
+            "description": "Dato oppgitt i dager siden 1970-01-01",
+            "unitOfMeasure": "N/A"
+          }
+        }
+      ]
     },
     {
+      "variableRole": "STOP_TIME",
       "name": "STOP",
       "label": "Stoppdato",
       "dataType": "Instant",
-      "variableRole": "STOP_TIME"
+      "representedVariables": [
+        {
+          "description": "Stoppdato/sluttdato for hendelsen",
+          "validPeriod": {
+            "start": 16436,
+            "stop": 18627
+          },
+          "valueDomain": {
+            "description": "Dato oppgitt i dager siden 1970-01-01",
+            "unitOfMeasure": "N/A"
+          }
+        }
+      ]
     }
   ]
 }
